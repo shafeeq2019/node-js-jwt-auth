@@ -27,7 +27,7 @@ db.sequelize.sync();
 //   initial();
 // });
 
-// simple route
+// simple route 
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to bezkoder application." });
 });
@@ -47,12 +47,12 @@ function initial() {
     id: 1,
     name: "user"
   });
- 
+
   Role.create({
     id: 2,
     name: "moderator"
   });
- 
+
   Role.create({
     id: 3,
     name: "admin"
