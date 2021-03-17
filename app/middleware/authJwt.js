@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const config = require("../config/auth.config.js");
+const config = require('../config/config.js');
 const db = require("../models");
 const User = db.user;
 
@@ -22,7 +22,7 @@ verifyToken = (req, res, next) => {
   }
 
 
-  jwt.verify(req.token, config.secret, (err, decoded) => {
+  jwt.verify(req.token, global.gConfig.auth.secret, (err, decoded) => {
     if (err) {
       return res.status(401).send({
         message: "Unauthorized!"

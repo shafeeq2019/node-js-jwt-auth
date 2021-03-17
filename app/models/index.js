@@ -1,21 +1,23 @@
-const config = require("../config/db.config.js");
+const config = require('../Config/config.js');
 
 const Sequelize = require("sequelize");
 const sequelize = new Sequelize(
-  config.DB,
-  config.USER,
-  config.PASSWORD,
+  global.gConfig.DBConfig.DB,
+  global.gConfig.DBConfig.USER,
+  global.gConfig.DBConfig.PASSWORD,
   {
-    host: config.HOST,
-    dialect: config.dialect,
+    host: global.gConfig.DBConfig.HOST,
+    dialect: global.gConfig.DBConfig.dialect,
     pool: {
-      max: config.pool.max,
-      min: config.pool.min,
-      acquire: config.pool.acquire,
-      idle: config.pool.idle
+      max: global.gConfig.DBConfig.pool.max,
+      min: global.gConfig.DBConfig.pool.min,
+      acquire: global.gConfig.DBConfig.pool.acquire,
+      idle: global.gConfig.DBConfig.pool.idle
     }
   }
 );
+
+
 
 const db = {};
 
@@ -30,6 +32,7 @@ db.role.belongsToMany(db.user, {
   foreignKey: "roleId",
   otherKey: "userId"
 });
+
 db.user.belongsToMany(db.role, {
   through: "user_roles",
   foreignKey: "userId",
