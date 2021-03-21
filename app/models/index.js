@@ -40,11 +40,8 @@ db.user.belongsToMany(db.role, {
   otherKey: "roleId"
 });
 
-db.user.belongsToMany(db.post, {
-  through: "user_posts",
-  foreignKey: "userId",
-  otherKey: "postId"
-});
+db.user.hasMany(db.post);
+db.post.belongsTo(db.user);
 
 db.ROLES = ["user", "admin", "moderator"];
 
