@@ -2,11 +2,14 @@ const db = require("../models");
 
 const User = db.user;
 const Role = db.role;
+const Token = db.token;
 
 const Op = db.Sequelize.Op;
 
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
+const crypto = require("crypto");
+const moment = require("moment");
 
 exports.signup = (req, res) => {
   // Save User to Database
@@ -85,3 +88,40 @@ exports.signin = (req, res) => {
       res.status(500).send({ message: err.message });
     });
 };
+
+exports.forgotPassword = async function(req, res) {
+  let user = await User.findOne({ where: { email: req.body.email } });
+  if (!user) {
+    return res.status(404).send({ message: "User Not found." });
+  }
+  let token = await Token.findOne({ where: { userId: user.id } });
+  if (token) {
+    await token.destroy();
+  }
+  let resetToken = crypto.randomBytes(32).toString("hex");
+  const hash = await bcrypt.hash(resetToken, Number("bcryptSalt"));
+  let newToken = await Token.create({token: hash});
+  await user.setToken(newToken);
+  const link = `localhost:8081/api/auth/passwordReset?token=${resetToken}&id=${user.id}`;
+  res.send(link) ;
+};
+
+exports.resetPassword = async function(req, res) {
+  let {userId, token, password} = req.body;
+  let passwordResetToken = await Token.findOne({ where: { userId: userId } });
+   if (!passwordResetToken || moment(passwordResetToken.tokenExpires).isBefore(moment.now())) {
+     res.status(500).send({ message: "Invalid or expired password reset token" });
+     return;
+   }
+   const isValid = await bcrypt.compare(token, passwordResetToken.token);
+   if (!isValid) {
+     res.status(500).send({ message: "Invalid or expired password reset token" });
+     return;
+   }
+   const hash = await bcrypt.hash(password, Number("bcryptSalt"));
+   let user = await User.findOne({ where: { id: userId } });
+   user.password = bcrypt.hashSync(password, 8);
+   await user.save();
+   await passwordResetToken.destroy();
+   res.send(user);
+}

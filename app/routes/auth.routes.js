@@ -20,4 +20,13 @@ module.exports = function(app) {
   );
 
   app.post("/api/auth/signin", controller.signin);
+
+  app.route("/api/auth/forgot_password")
+  .get()
+  .post(controller.forgotPassword);
+
+  app.route("/api/auth/passwordReset")
+  .get()
+  .post(controller.resetPassword);
+
 };
