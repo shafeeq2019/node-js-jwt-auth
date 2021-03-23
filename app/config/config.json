@@ -3,7 +3,7 @@
     "DBConfig": {
       "HOST": "localhost",
       "USER": "postgres",
-      "PASSWORD": "shosho2015",
+      "PASSWORD": "$Shosho2020",
       "DB": "testdb",
       "dialect": "postgres",
       "pool": {

@@ -1,15 +1,17 @@
 const db = require("../models");
+const core = require("../../core.js");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
+const crypto = require("crypto");
+const moment = require("moment");
+const ejs = require("ejs")
+const path = require("path");
 
 const User = db.user;
 const Role = db.role;
 const Token = db.token;
-
 const Op = db.Sequelize.Op;
 
-var jwt = require("jsonwebtoken");
-var bcrypt = require("bcryptjs");
-const crypto = require("crypto");
-const moment = require("moment");
 
 exports.signup = (req, res) => {
   // Save User to Database
@@ -102,8 +104,17 @@ exports.forgotPassword = async function(req, res) {
   const hash = await bcrypt.hash(resetToken, Number("bcryptSalt"));
   let newToken = await Token.create({token: hash});
   await user.setToken(newToken);
-  const link = `localhost:8081/api/auth/passwordReset?token=${resetToken}&id=${user.id}`;
-  res.send(link) ;
+  const link = `http://localhost:8081/api/auth/passwordReset?token=${resetToken}&id=${user.id}`;
+  //core.sendEmail;
+  try {
+  let options = {};
+  let htmlTemplate = await ejs.renderFile(path.join(__dirname, "../mail/template/resetPasswordTemplate.ejs"), {link: link, name: user.username}, options);
+  core.mail.sendEmail("barram@uni-wuppertal.de" ,
+    htmlTemplate);
+} catch (e) {
+  console.log(e)
+  core.logger.error(e);
+}
 };
 
 exports.resetPassword = async function(req, res) {

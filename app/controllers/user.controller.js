@@ -31,5 +31,5 @@ exports.addPost = async (req, res, next) => {
   let user = await User.findOne({ where: { id: req.userId } });
   let post = await Post.create({text: req.body.post});
   let addPost = await user.addPost(post);
-  res.status(200).send(post);
+  res.status(200).send("ok");
 }
