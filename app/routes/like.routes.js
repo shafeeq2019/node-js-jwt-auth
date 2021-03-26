@@ -10,19 +10,5 @@ module.exports = function(app) {
     next();
   });
 
-  app.get(
-    "/api/post/getPosts",
-    [authJwt.verifyToken],
-    controller.getUserPosts
-  );
-
-  app.post(
-    "/api/post/addPost",
-    [authJwt.verifyToken],
-    controller.addPost
-  );
-
-  app.post("/api/post/like", [authJwt.verifyToken], controller.postLikeToPost);
-
-
+  app.post("/api/like/add", [authJwt.verifyToken], controller.postLikeToPost);
 };
