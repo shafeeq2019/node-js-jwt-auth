@@ -19,18 +19,6 @@ module.exports = function(app) {
   );
 
   app.get(
-    "/api/user/post",
-    [authJwt.verifyToken],
-    controller.getUserPosts
-  );
-
-  app.post(
-    "/api/user/post",
-    [authJwt.verifyToken],
-    controller.addPost
-  );
-
-  app.get(
     "/api/test/mod",
     [authJwt.verifyToken, authJwt.isModerator],
     controller.moderatorBoard

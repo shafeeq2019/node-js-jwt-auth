@@ -28,6 +28,13 @@ db.user = require("../models/user.model.js")(sequelize, Sequelize);
 db.role = require("../models/role.model.js")(sequelize, Sequelize);
 db.post = require("../models/post.model.js")(sequelize, Sequelize);
 db.token = require("../models/token.model.js")(sequelize, Sequelize);
+db.like = require("../models/like.model.js")(sequelize, Sequelize)
+
+// db.like.queryInterface.addConstraint('like', {
+//    fields: ['userId','postId'],
+//    type: 'primary key',
+//    name: 'custom_primary_constraint_name'
+// });
 
 db.role.belongsToMany(db.user, {
   through: "user_roles",
@@ -46,6 +53,16 @@ db.post.belongsTo(db.user);
 
 db.user.hasOne(db.token);
 db.token.belongsTo(db.user);
+
+db.user.hasMany(db.like);
+db.like.belongsTo(db.user);
+
+db.post.hasOne(db.like);
+db.like.belongsTo(db.post);
+
+
+
+
 
 db.ROLES = ["user", "admin", "moderator"];
 
