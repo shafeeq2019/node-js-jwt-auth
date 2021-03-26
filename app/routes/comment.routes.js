@@ -10,5 +10,6 @@ module.exports = function(app) {
     next();
   });
 
-  app.post("/api/comment/add", [authJwt.verifyToken], controller.postComment)
+  app.post("/api/comment/add", [authJwt.verifyToken], controller.postComment);
+  app.post("/api/comment/update", [authJwt.verifyToken], controller.updateComment);
 };
