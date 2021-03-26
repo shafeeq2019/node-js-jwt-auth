@@ -16,10 +16,10 @@ const Op = db.Sequelize.Op;
 exports.signup = (req, res) => {
   // Save User to Database
   User.create({
-    username: req.body.username,
-    email: req.body.email,
-    password: bcrypt.hashSync(req.body.password, 8)
-  })
+      username: req.body.username,
+      email: req.body.email,
+      password: bcrypt.hashSync(req.body.password, 8)
+    })
     .then(user => {
       if (req.body.roles) {
         Role.findAll({
@@ -30,30 +30,38 @@ exports.signup = (req, res) => {
           }
         }).then(roles => {
           user.setRoles(roles).then(() => {
-            res.send({ message: "User registered successfully!" });
+            res.send({
+              message: "User registered successfully!"
+            });
           });
         });
       } else {
         // user role = 1
         user.setRoles([1]).then(() => {
-          res.send({ message: "User registered successfully!" });
+          res.send({
+            message: "User registered successfully!"
+          });
         });
       }
     })
     .catch(err => {
-      res.status(500).send({ message: err.message });
+      res.status(500).send({
+        message: err.message
+      });
     });
 };
 
 exports.signin = (req, res) => {
   User.findOne({
-    where: {
-      username: req.body.username
-    }
-  })
+      where: {
+        username: req.body.username
+      }
+    })
     .then(user => {
       if (!user) {
-        return res.status(404).send({ message: "User Not found." });
+        return res.status(404).send({
+          message: "User Not found."
+        });
       }
 
       var passwordIsValid = bcrypt.compareSync(
@@ -68,7 +76,9 @@ exports.signin = (req, res) => {
         });
       }
 
-      var token = jwt.sign({ id: user.id }, global.gConfig.auth.secret, {
+      var token = jwt.sign({
+        id: user.id
+      }, global.gConfig.auth.secret, {
         expiresIn: 86400 // 24 hours
       });
 
@@ -87,52 +97,85 @@ exports.signin = (req, res) => {
       });
     })
     .catch(err => {
-      res.status(500).send({ message: err.message });
+      res.status(500).send({
+        message: err.message
+      });
     });
 };
 
 exports.forgotPassword = async function(req, res) {
-  let user = await User.findOne({ where: { email: req.body.email } });
+  let user = await User.findOne({
+    where: {
+      email: req.body.email
+    }
+  });
   if (!user) {
-    return res.status(404).send({ message: "User Not found." });
+    return res.status(404).send({
+      message: "User Not found."
+    });
   }
-  let token = await Token.findOne({ where: { userId: user.id } });
+  let token = await Token.findOne({
+    where: {
+      userId: user.id
+    }
+  });
   if (token) {
     await token.destroy();
   }
   let resetToken = crypto.randomBytes(32).toString("hex");
   const hash = await bcrypt.hash(resetToken, Number("bcryptSalt"));
-  let newToken = await Token.create({token: hash});
+  let newToken = await Token.create({
+    token: hash
+  });
   await user.setToken(newToken);
   const link = `http://localhost:8081/api/auth/passwordReset?token=${resetToken}&id=${user.id}`;
   //core.sendEmail;
   try {
-  let options = {};
-  let htmlTemplate = await ejs.renderFile(path.join(__dirname, "../mail/template/resetPasswordTemplate.ejs"), {link: link, name: user.username}, options);
-  core.mail.sendEmail("barram@uni-wuppertal.de" ,
-    htmlTemplate);
-} catch (e) {
-  console.log(e)
-  core.logger.error(e);
-}
+    let options = {};
+    let htmlTemplate = await ejs.renderFile(path.join(__dirname, "../mail/template/resetPasswordTemplate.ejs"), {
+      link: link,
+      name: user.username
+    }, options);
+    core.mail.sendEmail("barram@uni-wuppertal.de",
+      htmlTemplate);
+  } catch (e) {
+    console.log(e)
+    core.logger.error(e);
+  }
 };
 
 exports.resetPassword = async function(req, res) {
-  let {userId, token, password} = req.body;
-  let passwordResetToken = await Token.findOne({ where: { userId: userId } });
-   if (!passwordResetToken || moment(passwordResetToken.tokenExpires).isBefore(moment.now())) {
-     res.status(500).send({ message: "Invalid or expired password reset token" });
-     return;
-   }
-   const isValid = await bcrypt.compare(token, passwordResetToken.token);
-   if (!isValid) {
-     res.status(500).send({ message: "Invalid or expired password reset token" });
-     return;
-   }
-   const hash = await bcrypt.hash(password, Number("bcryptSalt"));
-   let user = await User.findOne({ where: { id: userId } });
-   user.password = bcrypt.hashSync(password, 8);
-   await user.save();
-   await passwordResetToken.destroy();
-   res.send(user);
+  let {
+    userId,
+    token,
+    password
+  } = req.body;
+  let passwordResetToken = await Token.findOne({
+    where: {
+      userId: userId
+    }
+  });
+  if (!passwordResetToken || moment(passwordResetToken.tokenExpires).isBefore(moment.now())) {
+    res.status(500).send({
+      message: "Invalid or expired password reset token"
+    });
+    return;
+  }
+  const isValid = await bcrypt.compare(token, passwordResetToken.token);
+  if (!isValid) {
+    res.status(500).send({
+      message: "Invalid or expired password reset token"
+    });
+    return;
+  }
+  const hash = await bcrypt.hash(password, Number("bcryptSalt"));
+  let user = await User.findOne({
+    where: {
+      id: userId
+    }
+  });
+  user.password = bcrypt.hashSync(password, 8);
+  await user.save();
+  await passwordResetToken.destroy();
+  res.send(user);
 }

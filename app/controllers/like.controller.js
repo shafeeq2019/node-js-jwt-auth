@@ -9,21 +9,41 @@ const Like = db.like;
 exports.postLikeToPost = async (req, res, next) => {
   const postId = req.body.postId;
   const userId = req.userId;
-  let user = await User.findOne({ where: { id: req.userId } });
+  let user = await User.findOne({
+    where: {
+      id: req.userId
+    }
+  });
   if (!user) {
-    return res.status(404).send({ message: "User Not found." });
+    return res.status(404).send({
+      message: "User Not found."
+    });
   }
-  let post = await Post.findOne({ where: { id: postId } });
+  let post = await Post.findOne({
+    where: {
+      id: postId
+    }
+  });
   if (!post) {
-    return res.status(404).send({ message: "Post Not found." });
+    return res.status(404).send({
+      message: "Post Not found."
+    });
   }
-  let like = await Like.findOne({ where: { postId: post.id, userId: user.id   } });
+  let like = await Like.findOne({
+    where: {
+      postId: post.id,
+      userId: user.id
+    }
+  });
   if (!like) {
-    let newLike = await user.createLike({postId: post.id});
+    let newLike = await user.createLike({
+      postId: post.id
+    });
     res.status(200).send(newLike)
-  }
-  else {
+  } else {
     like.destroy();
-    res.status(200).send({message: `Like reomoved`});
+    res.status(200).send({
+      message: `Like reomoved`
+    });
   }
 }

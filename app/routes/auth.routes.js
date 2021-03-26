@@ -1,32 +1,42 @@
-const { verifySignUp } = require("../middleware");
+const {
+  verifySignUp
+} = require("../middleware");
 const controller = require("../controllers/auth.controller");
+var express = require('express');
+var Router = express.Router();
 
-module.exports = function(app) {
-  app.use(function(req, res, next) {
-    res.header(
-      "Access-Control-Allow-Headers",
-      "x-access-token, Origin, Content-Type, Accept"
-    );
-    next();
-  });
 
-  app.post(
-    "/api/auth/signup",
-    [
-      verifySignUp.checkDuplicateUsernameOrEmail,
-      verifySignUp.checkRolesExisted
-    ],
-    controller.signup
+Router.use(function(req, res, next) {
+  res.header(
+    "Access-Control-Allow-Headers",
+    "x-access-token, Origin, Content-Type, Accept"
   );
+  next();
+});
 
-  app.post("/api/auth/signin", controller.signin);
+Router.post(
+  "/signup",
+  [
+    verifySignUp.checkDuplicateUsernameOrEmail,
+    verifySignUp.checkRolesExisted
+  ],
+  controller.signup
+);
 
-  app.route("/api/auth/forgot_password")
+Router.post("/signin", controller.signin);
+
+Router.route("/forgot_password")
   .get()
   .post(controller.forgotPassword);
 
-  app.route("/api/auth/passwordReset")
+Router.route("/passwordReset")
   .get()
   .post(controller.resetPassword);
 
-};
+
+Router.get("/", (req, res) => {
+  res.send("es hat geklappt !")
+})
+
+exports.router = Router;
+exports.path = 'auth'
