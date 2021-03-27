@@ -2,29 +2,30 @@ const {
   authJwt
 } = require("../middleware");
 const controller = require("../controllers/post.controller");
+var express = require('express');
+var Router = express.Router();
 
-module.exports = function(app) {
-  app.use(function(req, res, next) {
-    res.header(
-      "Access-Control-Allow-Headers",
-      "x-access-token, Origin, Content-Type, Accept"
-    );
-    next();
-  });
-
-  app.get(
-    "/api/post/getPosts",
-    [authJwt.verifyToken],
-    controller.getUserPosts
+Router.use(function (req, res, next) {
+  res.header(
+    "Access-Control-Allow-Headers",
+    "x-access-token, Origin, Content-Type, Accept"
   );
+  next();
+});
 
-  app.post(
-    "/api/post/addPost",
-    [authJwt.verifyToken],
-    controller.addPost
-  );
+Router.get(
+  "/api/post/getPosts",
+  [authJwt.verifyToken],
+  controller.getUserPosts
+);
 
-  app.post("/api/post/like", [authJwt.verifyToken], controller.postLikeToPost);
+Router.post(
+  "/api/post/addPost",
+  [authJwt.verifyToken],
+  controller.addPost
+);
 
+Router.post("/api/post/like", [authJwt.verifyToken], controller.postLikeToPost);
 
-};
+exports.router = Router;
+exports.path = 'post'

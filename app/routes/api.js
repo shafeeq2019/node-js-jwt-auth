@@ -2,17 +2,14 @@ var express = require('express');
 var Router = express.Router();
 
 
-// let api = {
-//   auth: require('./auth.routes'),
-//   user: require('./user.routes'),
-//   post: require('./post.routes'),
-//   like: require('./like.routes'),
-//   comment: require('./comment.routes')
-// }
-
 let api = {
-    auth: require('./auth.routes')
+  auth: require('./auth.routes'),
+  user: require('./user.routes'),
+  post: require('./post.routes'),
+  like: require('./like.routes'),
+  comment: require('./comment.routes')
 }
+
 
 
 Router.get('/', (req, res) => {
