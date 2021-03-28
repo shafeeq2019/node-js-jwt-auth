@@ -12,9 +12,11 @@ let api = {
 
 
 
+
 Router.get('/', (req, res) => {
   res.send("Willkommen")
 });
+
 
 
 

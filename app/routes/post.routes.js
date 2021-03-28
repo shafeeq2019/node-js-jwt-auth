@@ -14,13 +14,42 @@ Router.use(function (req, res, next) {
 });
 
 Router.get(
-  "/api/post/getPosts",
+  "/",
+  [authJwt.verifyToken],
+  function(req,res) {
+    res.send("ok")
+  }
+);
+
+Router.get(
+  "/getAll",
   [authJwt.verifyToken],
   controller.getUserPosts
 );
 
+/**
+ * @swagger
+ * /add:
+ *    post:
+ *      tags:
+ *      - "post"
+ *      description: add a post
+ *    parameters:
+ *      - name: post
+ *        in: query
+ *        description: text of the post you want to added
+ *        required: truex
+ *        schema:
+ *          type: string
+ *          format: string
+ *    responses:
+ *      '201':
+ *        description: Successfully created user
+ */
+
+
 Router.post(
-  "/api/post/addPost",
+  "/add",
   [authJwt.verifyToken],
   controller.addPost
 );
