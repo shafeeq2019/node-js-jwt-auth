@@ -7,6 +7,13 @@ const swaggerUi = require('swagger-ui-express');
 
 const app = express();
 
+app.use("/",function(req, res, next) {
+  console.log("hello world");
+    var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+  console.log(fullUrl);
+  next();
+})
+
 var corsOptions = {
   origin: "http://localhost:8081"
 };
@@ -21,8 +28,11 @@ const swaggerOptions = {
       contact: {
         name: "Amazing Developer"
       },
-      servers: ["http://localhost:8081"]
     },
+    servers: [
+      { url: 'http://localhost:8081/api/v1' , description: "Development server"}
+    ],
+    schemes: ["http", "https"],
     components: {
       securitySchemes: {
         bearerAuth: {
@@ -79,6 +89,20 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs, swaggerUiOpti
  *      '201':
  *        description: Successfully created user
  */
+
+ /**
+  * @swagger
+  * /:
+  *    get:
+  *      tags:
+  *      - "post"
+  *      description: add a post
+  *
+  *    responses:
+  *      '201':
+  *        description: Successfully created user
+  */
+
 
 
 app.use(cors(corsOptions));

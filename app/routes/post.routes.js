@@ -15,8 +15,8 @@ Router.use(function (req, res, next) {
 
 Router.get(
   "/",
-  [authJwt.verifyToken],
   function(req,res) {
+    console.log("trig")
     res.send("ok")
   }
 );
@@ -29,23 +29,39 @@ Router.get(
 
 /**
  * @swagger
- * /add:
+ * /post/add:
  *    post:
  *      tags:
  *      - "post"
  *      description: add a post
  *    parameters:
  *      - name: post
- *        in: query
+ *        in: body
  *        description: text of the post you want to added
- *        required: truex
+ *        required: true
+ *        content:
+*           application/json:
  *        schema:
  *          type: string
- *          format: string
+ *
  *    responses:
  *      '201':
  *        description: Successfully created user
  */
+
+ /**
+  * @swagger
+  * /post/:
+  *    get:
+  *      tags:
+  *      - "post"
+  *      description: add a post
+  *
+  *    responses:
+  *      '201':
+  *        description: Successfully created user
+  */
+
 
 
 Router.post(

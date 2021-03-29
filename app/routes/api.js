@@ -14,9 +14,14 @@ let api = {
 
 
 Router.get('/', (req, res) => {
+    console.log("trig");
   res.send("Willkommen")
 });
 
+Router.post('/', (req, res) => {
+  console.log("trig");
+  res.send("Willkommen")
+});
 
 
 
