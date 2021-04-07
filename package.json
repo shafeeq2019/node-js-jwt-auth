@@ -30,6 +30,7 @@
     "sendmail": "^1.6.1",
     "sequelize": "^5.21.3",
     "swagger-jsdoc": "^6.0.0-rc.6",
+    "swagger-model-validator": "^3.0.20",
     "swagger-ui-express": "^4.1.6",
     "winston": "^3.3.3"
   }

@@ -13,7 +13,21 @@ Router.use(function (req, res, next) {
   next();
 });
 
-Router.get("/api/test/all", controller.allAccess);
+/**
+ * @swagger
+ * /user/test/all:
+ *   get:
+ *     description: test request to get public content
+ *     tags:
+ *       - user
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description:
+
+ */
+Router.get("/test/all", controller.allAccess);
 
 Router.get(
   "/api/test/user",

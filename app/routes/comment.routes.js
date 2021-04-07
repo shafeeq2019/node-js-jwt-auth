@@ -13,7 +13,28 @@ Router.use(function (req, res, next) {
   next();
 });
 
+
+/**
+ * @swagger
+ * /comment/add:
+ *  post:
+ *   description: add a new comment
+ *   tags:
+ *    - comment
+ *   parameters:
+ *    - name: text
+ *      description: text of the new post
+ *      in: body
+ *      required: true
+ *      schema:
+ *        $ref: '#/components/schemas/User'
+ *   response:
+ *    '200':
+ *      
+ * 
+ */
 Router.post("/api/comment/add", [authJwt.verifyToken], controller.postComment);
+
 Router.post("/api/comment/update", [authJwt.verifyToken], controller.updateComment);
 
 exports.router = Router;
