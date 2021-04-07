@@ -30,19 +30,19 @@ Router.use(function (req, res, next) {
 Router.get("/test/all", controller.allAccess);
 
 Router.get(
-  "/api/test/user",
+  "/user",
   [authJwt.verifyToken],
   controller.userBoard
 );
 
 Router.get(
-  "/api/test/mod",
+  "/mod",
   [authJwt.verifyToken, authJwt.isModerator],
   controller.moderatorBoard
 );
 
 Router.get(
-  "/api/test/admin",
+  "/admin",
   [authJwt.verifyToken, authJwt.isAdmin],
   controller.adminBoard
 );
