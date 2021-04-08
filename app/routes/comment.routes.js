@@ -21,21 +21,22 @@ Router.use(function (req, res, next) {
  *   description: add a new comment
  *   tags:
  *    - comment
- *   parameters:
- *    - name: text
- *      description: text of the new post
- *      in: body
- *      required: true
- *      schema:
- *        $ref: '#/components/schemas/User'
- *   response:
- *    '200':
- *      
+ *   produces:
+ *    - application/json
+ *   requestBody:
+ *     description: Optional description in *Markdown*
+ *     content:
+ *       application/json:
+ *        schema:
+ *          $ref: '#/components/schemas/comment'
+ *   responses:
+ *      "200":
+ *        description: test
  * 
  */
-Router.post("/api/comment/add", [authJwt.verifyToken], controller.postComment);
+Router.post("/add", [authJwt.verifyToken], controller.postComment);
 
-Router.post("/api/comment/update", [authJwt.verifyToken], controller.updateComment);
+Router.post("/update", [authJwt.verifyToken], controller.updateComment);
 
 exports.router = Router;
 exports.path = 'comment'

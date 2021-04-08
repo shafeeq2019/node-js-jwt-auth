@@ -6,18 +6,12 @@ const swaggerRouter = require('./app/controllers/swagger.js').Router;
 const app = express();
 
 
-app.use("/",function(req, res, next) {
-  var fullUrl = "new request " + req.protocol + '://' + req.get('host') + req.originalUrl;
-  console.log(fullUrl);
-  next();
-})
+
 
 var corsOptions = {
   origin: "http://localhost:8081"
 };
 
-//api-docs
-app.use("/api-docs", swaggerRouter);
 
 app.use(cors(corsOptions));
 
@@ -26,6 +20,17 @@ app.use(bodyParser.json());
 
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
+
+
+app.use("/",function(req, res, next) {
+  var fullUrl = "new request " + req.protocol + '://' + req.get('host') + req.originalUrl;
+  console.log(fullUrl);
+  next();
+})
+
+//api-docs
+app.use("/api-docs", swaggerRouter);
+
 
 // database
 const db = require("./app/models");
@@ -42,7 +47,6 @@ db.sequelize.sync();
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to bezkoder application." });
 });
-
 
 
 const api = require('./app/routes/api.js')

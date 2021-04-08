@@ -23,11 +23,11 @@ Router.use(function (req, res, next) {
  *     produces:
  *       - application/json
  *     responses:
- *       200:
- *         description:
+ *       "200":
+ *         description: ok
 
  */
-Router.get("/test/all", controller.allAccess);
+Router.get("/test/all",  [authJwt.verifyToken], controller.allAccess);
 
 Router.get(
   "/user",

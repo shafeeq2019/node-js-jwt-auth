@@ -30,23 +30,22 @@ Router.get(
 /**
  * @swagger
  * /post/add:
- *    post:
- *      tags:
- *      - "post"
- *      description: add a post
- *    parameters:
- *      - name: post
- *        in: body
- *        description: text of the post you want to added
- *        required: true
- *        content:
-*           application/json:
+ *  post:
+ *   description: add a new post
+ *   tags:
+ *    - post
+ *   produces:
+ *    - application/json
+ *   requestBody:
+ *     description: Optional description in *Markdown*
+ *     content:
+ *       application/json:
  *        schema:
- *          type: string
- *
- *    responses:
- *      '201':
- *        description: Successfully created user
+ *          $ref: '#/components/schemas/post'
+ *   responses:
+ *      "200":
+ *        description: test
+ * 
  */
 
  /**
