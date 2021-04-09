@@ -2,11 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const core = require("./core.js");
-const swaggerRouter = require('./app/controllers/swagger.js').Router;
 const app = express();
-
-
-
 
 var corsOptions = {
   origin: "http://localhost:8081"
@@ -29,7 +25,7 @@ app.use("/",function(req, res, next) {
 })
 
 //api-docs
-app.use("/api-docs", swaggerRouter);
+
 
 
 // database

@@ -27,7 +27,7 @@ Router.use(function (req, res, next) {
  *         description: ok
 
  */
-Router.get("/test/all",  [authJwt.verifyToken], controller.allAccess);
+Router.get("/test/all", controller.allAccess);
 
 Router.get(
   "/user",

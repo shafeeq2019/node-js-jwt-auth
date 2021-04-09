@@ -1,6 +1,6 @@
 var express = require('express');
 var Router = express.Router();
-
+const swagggerController = require('../controllers/swagger.controller.js').Router;
 
 let api = {
   auth: require('./auth.routes'),
@@ -10,20 +10,7 @@ let api = {
   comment: require('./comment.routes')
 }
 
-
-
-
-Router.get('/', (req, res) => {
-    console.log("trig");
-  res.send("Willkommen")
-});
-
-Router.post('/', (req, res) => {
-  console.log("trig");
-  res.send("Willkommen")
-});
-
-
+Router.use("/api-docs", swagggerController);
 
 for (let [key, value] of Object.entries(api)) {
   Router.use(`/${value.path}`, value.router)
