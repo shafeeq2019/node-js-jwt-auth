@@ -13,13 +13,25 @@ Router.use(function (req, res, next) {
   next();
 });
 
-Router.get(
-  "/",
-  function(req,res) {
-    console.log("trig")
-    res.send("ok")
-  }
-);
+/**
+ * @swagger
+ * /post/getAll:
+ *  get:
+ *   description: get all user Posts
+ *   tags:
+ *    - post
+ *   produces:
+ *    - application/json
+ *   requestBody:
+ *     description: Optional description in *Markdown*
+ *     content:
+ *       application/json:
+ *   responses:
+ *      "200":
+ *        description: list of all posts
+ * 
+ */
+
 
 Router.get(
   "/getAll",
@@ -47,19 +59,6 @@ Router.get(
  *        description: test
  * 
  */
-
- /**
-  * @swagger
-  * /post/:
-  *    get:
-  *      tags:
-  *      - "post"
-  *      description: add a post
-  *
-  *    responses:
-  *      '201':
-  *        description: Successfully created user
-  */
 
 
 

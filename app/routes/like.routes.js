@@ -14,7 +14,29 @@ Router.use(function (req, res, next) {
   next();
 });
 
-Router.post("/api/like/add", [authJwt.verifyToken], controller.postLikeToPost);
+/**
+ * @swagger
+ * /like/add:
+ *  post:
+ *   description: add a like to a post
+ *   tags:
+ *    - like
+ *   produces:
+ *    - application/json
+ *   requestBody:
+ *     description: Optional description in *Markdown*
+ *     content:
+ *       application/json:
+ *        schema:
+ *          $ref: '#/components/schemas/like'
+ *   responses:
+ *      "200":
+ *        description: test
+ * 
+ */
+
+
+Router.post("/add", [authJwt.verifyToken], controller.postLikeToPost);
 
 exports.router = Router;
-exports.path = 'user'
+exports.path = 'like'

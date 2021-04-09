@@ -58,6 +58,17 @@ const options = {
             required: [
               "post"
             ]
+          },
+          like: {
+            type: "object",
+            properties: {
+              postId: {
+                type: "integer"
+              }
+            },
+            required: [
+              "postId"
+            ]
           }
         }
       },
