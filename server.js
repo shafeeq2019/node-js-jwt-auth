@@ -3,11 +3,34 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const core = require("./core.js");
 const app = express();
+const AdminBro = require('admin-bro')
+const AdminBroExpress = require('@admin-bro/express');
+const AdminBroSequelize = require('@admin-bro/sequelize');
+
+// Admin panel 
+
+AdminBro.registerAdapter(AdminBroSequelize)
+const AdminBroDB = new AdminBro({
+  rootPath: '/admin',
+  databases: [core.db],
+  resources: [{
+    resource: core.db.post,
+    options: {
+      //...
+    }
+  }],
+  branding: {
+    companyName: 'XYZ c.o.',
+  },
+})
+
+const router = AdminBroExpress.buildRouter (AdminBroDB)
+app.use(AdminBroDB.options.rootPath, router)
+
 
 var corsOptions = {
   origin: "http://localhost:8081"
 };
-
 
 app.use(cors(corsOptions));
 
@@ -69,3 +92,5 @@ function initial() {
     name: "admin"
   });
 }
+
+

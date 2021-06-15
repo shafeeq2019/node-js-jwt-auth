@@ -57,6 +57,9 @@ exports.getUserPosts = async (req, res, next) => {
   user.getPosts().then(posts => {
     res.send(posts);
   });
+  user.getRoles().then( roles => {
+    console.log(roles)
+  } )
 }
 
 exports.addPost = async (req, res, next) => {

@@ -69,3 +69,4 @@ db.comment.belongsTo(db.user)
 db.ROLES = ["user", "admin", "moderator"];
 
 module.exports = db;
+

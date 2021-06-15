@@ -3,7 +3,7 @@ module.exports = (sequelize, Sequelize) => {
     text: {
       type: Sequelize.STRING(10000),
       allowNull: false
-    }
+    },
   });
 
   return Post;
