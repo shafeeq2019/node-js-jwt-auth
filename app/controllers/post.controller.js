@@ -49,28 +49,27 @@ exports.postLikeToPost = async (req, res, next) => {
 }
 
 exports.getUserPosts = async (req, res, next) => {
-  let user = await User.findOne({
-    where: {
-      id: req.userId
-    }
-  });
-  user.getPosts().then(posts => {
-    res.send(posts);
-  });
-  user.getRoles().then( roles => {
-    console.log(roles)
-  } )
+  try {
+    let posts = await Post.findAll({
+      where: {
+        userId: req.userId
+      }
+    })
+    res.status(200).send(posts);
+  } catch (error) {
+    res.status(404).send(error);
+  }
 }
 
 exports.addPost = async (req, res, next) => {
-  let user = await User.findOne({
-    where: {
-      id: req.userId
-    }
-  });
-  let post = await Post.create({
-    text: req.body.post
-  });
-  await user.addPost(post);
-  res.status(200).send("ok");
+  try {
+    let post = await Post.create({
+      userId: req.userId,
+      text: req.body.post
+    });
+    res.status(200).send(post);
+  } catch (error) {
+    res.status(404).send(error);
+  }
+
 }

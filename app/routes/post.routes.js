@@ -35,6 +35,7 @@ Router.use(function (req, res, next) {
 
 Router.get(
   "/getAll",
+  [authJwt.verifyToken],
   controller.getUserPosts
 );
 

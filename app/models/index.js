@@ -57,8 +57,8 @@ db.post.hasOne(db.like);
 db.like.belongsTo(db.post);
 
 //comments
-db.post.hasMany(db.comment);
-db.comment.belongsTo(db.post);
+db.post.hasMany(db.comment,  { foreignKey: { allowNull: false }, onDelete: 'CASCADE' });
+db.comment.belongsTo(db.post,  { foreignKey: { allowNull: false }, onDelete: 'CASCADE' });
 
 db.user.hasMany(db.comment);
 db.comment.belongsTo(db.user)
