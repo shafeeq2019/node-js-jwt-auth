@@ -1,43 +1,31 @@
 {
-  "name": "node-js-jwt-auth",
+  "name": "vue-jwt-auth-example",
   "version": "1.0.0",
-  "description": "Node.js Demo for JWT Authentication",
-  "main": "server.js",
+  "description": "An of how to do JWT Authentication with Vue.js",
   "scripts": {
-    "start": "nodemon server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "webpack-dev-server --inline --hot"
   },
-  "keywords": [
-    "node.js",
-    "jwt",
-    "authentication",
-    "express",
-    "mysql"
-  ],
-  "author": "bezkoder",
-  "license": "ISC",
+  "author": "ryanchenkie",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-core": "^6.0.0",
+    "babel-loader": "^6.0.0",
+    "babel-plugin-transform-runtime": "^6.0.0",
+    "babel-preset-es2015": "^6.0.0",
+    "babel-preset-stage-2": "^6.0.0",
+    "babel-runtime": "^5.8.0",
+    "css-loader": "^0.21.0",
+    "style-loader": "^0.13.0",
+    "vue-hot-reload-api": "^1.2.1",
+    "vue-html-loader": "^1.0.0",
+    "vue-loader": "^7.0.1",
+    "webpack": "^1.12.3",
+    "webpack-dev-server": "^1.12.1"
+  },
   "dependencies": {
-    "@admin-bro/express": "^3.1.0",
-    "@admin-bro/sequelize": "^1.2.1",
-    "admin-bro": "^4.0.1",
-    "bcryptjs": "^2.4.3",
-    "body-parser": "^1.19.0",
-    "cors": "^2.8.5",
-    "ejs": "^3.1.6",
-    "express": "^4.17.1",
-    "express-formidable": "^1.2.0",
-    "express-session": "^1.17.2",
-    "jsonwebtoken": "^8.5.1",
-    "moment": "^2.29.1",
-    "mysql2": "^2.1.0",
-    "nodemon": "^2.0.7",
-    "pg": "^8.5.1",
-    "sendmail": "^1.6.1",
-    "sequelize": "^5.21.3",
-    "swagger-jsdoc": "^6.0.0-rc.6",
-    "swagger-model-validator": "^3.0.20",
-    "swagger-ui-express": "^4.1.6",
-    "tslib": "^2.3.0",
-    "winston": "^3.3.3"
+    "bootstrap": "^3.3.5",
+    "vue-resource": "^0.1.17",
+    "vue-router": "^0.7.5",
+    "vue": "^1.0.7"
   }
 }
