@@ -1,7 +1,7 @@
 const {
   authJwt
 } = require("../middleware");
-const controller = require("../controllers/post.controller");
+const controller = require("../controllers/like.controller");
 var express = require('express');
 var Router = express.Router();
 
@@ -36,7 +36,7 @@ Router.use(function (req, res, next) {
  */
 
 
-Router.post("/add", [authJwt.verifyToken], controller.postLikeToPost);
+Router.post("/add", [authJwt.verifyToken], controller.add);
 
 exports.router = Router;
 exports.path = 'like'

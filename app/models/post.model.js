@@ -4,6 +4,10 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING(10000),
       allowNull: false
     },
+    isDeleted: {
+      type: Sequelize.BOOLEAN,
+      defaultValue: false
+    }
   });
 
   return Post;

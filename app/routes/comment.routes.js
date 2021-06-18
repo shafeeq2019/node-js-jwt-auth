@@ -34,9 +34,9 @@ Router.use(function (req, res, next) {
  *        description: test
  * 
  */
-Router.post("/add", [authJwt.verifyToken], controller.postComment);
+Router.post("/add", [authJwt.verifyToken], controller.add);
 
-Router.post("/update", [authJwt.verifyToken], controller.updateComment);
+Router.post("/update", [authJwt.verifyToken], controller.update);
 
 exports.router = Router;
 exports.path = 'comment'

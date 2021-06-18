@@ -1,58 +1,16 @@
-const db = require("../models");
+let core = require('../../core.js')
+let db = core.db;
 
-const User = db.user;
-const Role = db.role;
-const Post = db.post;
-const Like = db.like;
-
-
-exports.postLikeToPost = async (req, res, next) => {
-  const postId = req.body.postId;
-  const userId = req.userId;
-  let user = await User.findOne({
-    where: {
-      id: req.userId
-    }
-  });
-  if (!user) {
-    return res.status(404).send({
-      message: "User Not found."
-    });
-  }
-  let post = await Post.findOne({
-    where: {
-      id: postId
-    }
-  });
-  if (!post) {
-    return res.status(404).send({
-      message: "Post Not found."
-    });
-  }
-  let like = await Like.findOne({
-    where: {
-      postId: post.id,
-      userId: user.id
-    }
-  });
-  if (!like) {
-    let newLike = await user.createLike({
-      postId: post.id
-    });
-    res.status(200).send(newLike)
-  } else {
-    like.destroy();
-    res.status(200).send({
-      message: `Like reomoved`
-    });
-  }
-}
-
-exports.getUserPosts = async (req, res, next) => {
+exports.getAll = async (req, res, next) => {
   try {
-    let posts = await Post.findAll({
+    let posts = await db.post.findAll({
       where: {
-        userId: req.userId
+        userId: req.userId,
+        isDeleted: false
+      },
+      attributes: {
+        include: [],
+        exclude: ["isDeleted"]
       }
     })
     res.status(200).send(posts);
@@ -60,10 +18,9 @@ exports.getUserPosts = async (req, res, next) => {
     res.status(404).send(error);
   }
 }
-
-exports.addPost = async (req, res, next) => {
+exports.add = async (req, res, next) => {
   try {
-    let post = await Post.create({
+    let post = await db.post.create({
       userId: req.userId,
       text: req.body.post
     });
@@ -71,5 +28,24 @@ exports.addPost = async (req, res, next) => {
   } catch (error) {
     res.status(404).send(error);
   }
+}
 
+
+exports.delete = async (req, res, next) => {
+  try {
+    let post = await db.post.findOne({
+      where: {
+        id: req.body.postId,
+        userId: req.userId,
+        isDeleted: false
+      }
+    });
+    if (!post) {
+      res.status(404).send(`no post with id ${req.body.postId} found !`);
+    }
+    post.update({isDeleted: true})
+    res.status(200).send(`post with id ${req.body.postId} is deleted !`);
+  } catch (error) {
+    res.status(404).send(error.message);
+  }
 }

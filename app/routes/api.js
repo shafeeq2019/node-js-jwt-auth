@@ -6,8 +6,8 @@ let api = {
   auth: require('./auth.routes'),
   user: require('./user.routes'),
   post: require('./post.routes'),
+  comment: require('./comment.routes'),
   like: require('./like.routes'),
-  comment: require('./comment.routes')
 }
 
 Router.use("/api-docs", swagggerController);

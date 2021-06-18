@@ -1,49 +1,27 @@
-const db = require("../models");
+let core = require('../../core.js')
+let db = core.db;
 
-const User = db.user;
-const Role = db.role;
-const Post = db.post;
-const Like = db.like;
-
-
-exports.postLikeToPost = async (req, res, next) => {
-  const postId = req.body.postId;
-  const userId = req.userId;
-  let user = await User.findOne({
-    where: {
-      id: req.userId
+exports.add = async (req, res, next) => {
+  try {
+    let like = await db.like.findOne({
+      where: {
+        postId: req.body.postId,
+        userId: req.userId
+      }
+    });
+    if (!like) {
+      let newLike = await db.like.create({
+        postId: req.body.postId,
+        userId: req.userId
+      });
+      res.status(200).send(newLike)
+    } else {
+      like.destroy();
+      res.status(200).send({
+        message: `Like reomoved`
+      });
     }
-  });
-  if (!user) {
-    return res.status(404).send({
-      message: "User Not found."
-    });
-  }
-  let post = await Post.findOne({
-    where: {
-      id: postId
-    }
-  });
-  if (!post) {
-    return res.status(404).send({
-      message: "Post Not found."
-    });
-  }
-  let like = await Like.findOne({
-    where: {
-      postId: post.id,
-      userId: user.id
-    }
-  });
-  if (!like) {
-    let newLike = await user.createLike({
-      postId: post.id
-    });
-    res.status(200).send(newLike)
-  } else {
-    like.destroy();
-    res.status(200).send({
-      message: `Like reomoved`
-    });
+  } catch (error) {
+    res.send(error.message);
   }
 }
