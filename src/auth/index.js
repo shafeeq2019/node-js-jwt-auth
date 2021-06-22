@@ -1,9 +1,9 @@
-import {router} from '../index'
-
+import router from '../router'
+import axios from 'axios';
 const API_URL = 'http://localhost:8081/api/v1/'
 const LOGIN_URL = API_URL + 'auth/signin/'
 const SIGNUP_URL = API_URL + 'auth/signup/'
-
+import api from '../api.js'
 export default {
 
   user: {
@@ -11,27 +11,25 @@ export default {
   },
 
   login(context, creds, redirect) {
-    context.$http.post(LOGIN_URL, creds, (data) => {
+    api.sendRequest('post',"auth/signin", creds).then((data) => {
       localStorage.setItem('id_token', data.accessToken)
-
       this.user.authenticated = true
-
       if(redirect) {
-        router.go(redirect)        
+        router.push(redirect)        
       }
-
-    }).error((err) => {
+    }).catch((err) => {
+      console.log(err);
       context.error = err.message
     })
   },
 
   signup(context, creds, redirect) {
-    context.$http.post(SIGNUP_URL, creds, (data) => {
+    api.sendRequest('post',"auth/signup", creds).then(data => {
       if (data) {
+        console.log(data);
         this.login(context, creds, redirect);
       }
-
-    }).error((err) => {
+    }).catch((err) => {
       console.log(err)
       context.error = err.message
     })

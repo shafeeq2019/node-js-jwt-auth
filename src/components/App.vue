@@ -1,18 +1,20 @@
 <template>
-  <nav class="navbar navbar-default">
+<div>
+    <nav class="navbar navbar-default">
     <div class="container">
       <ul class="nav navbar-nav">
-        <li><a v-link="'home'">Home</a></li>
-        <li v-if="!user.authenticated"><a v-link="'login'">Login</a></li>
-        <li v-if="!user.authenticated"><a v-link="'signup'">Sign Up</a></li>
-        <li v-if="user.authenticated"><a v-link="'secretquote'">Secret Quote</a></li>
-        <li v-if="user.authenticated"><a v-link="'login'" @click="logout()">Logout</a></li>
+        <li><a><router-link to="home">Home</router-link></a></li>
+        <li v-if="!user.authenticated"><a><router-link to="login">Login</router-link></a></li>
+        <li v-if="!user.authenticated"><a><router-link to="signup">Sing up</router-link></a></li>
+        <li v-if="user.authenticated"><a><router-link to="secretquote">Secret Quote</router-link></a></li>
+        <li v-if="user.authenticated"><a @click="logout()"><router-link to="login">Logout</router-link></a></li>
       </ul>
     </div>    
   </nav>
   <div class="container">
     <router-view></router-view>
   </div>
+</div>
 </template>
 
 <script>
@@ -26,7 +28,6 @@ export default {
   },
 
   methods: {
-
     logout() {
       auth.logout()
     }

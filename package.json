@@ -19,13 +19,15 @@
     "vue-hot-reload-api": "^1.2.1",
     "vue-html-loader": "^1.0.0",
     "vue-loader": "^7.0.1",
-    "webpack": "^1.12.3",
-    "webpack-dev-server": "^1.12.1"
+    "webpack": "^3.12.0",
+    "webpack-dev-server": "^2.11.5"
   },
   "dependencies": {
+    "axios": "^0.21.1",
     "bootstrap": "^3.3.5",
-    "vue-resource": "^0.1.17",
-    "vue-router": "^0.7.5",
-    "vue": "^1.0.7"
+    "vue": "^2.6.14",
+    "vue-axios": "^3.2.4",
+    "vue-resource": "^1.5.3",
+    "vue-router": "^3.5.2"
   }
 }
