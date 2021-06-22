@@ -20,7 +20,7 @@ export default new VueRouter({
       component: SecretQuote
     },
     {
-      path: '/',
+      path: '/home',
       name: 'home',
       component: Home
     },

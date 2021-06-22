@@ -1,30 +1,26 @@
 <template>
   <div class="col-sm-6 col-sm-offset-3">
-    <h1>Get a Free Chuck Norris Quote!</h1>
-    <button class="btn btn-primary" v-on:click="getQuote()">Get a Quote</button>
-    <div class="quote-area" v-if="quote">
-      <h2><blockquote>{{ quote }}</blockquote></h2>      
-    </div>
+  <div>
+    <b-form-input v-model="post" placeholder="Write a post"  v-on:keyup.enter="setNewPost"></b-form-input>
+  </div>
   </div>
 </template>
-
 <script>
-
+import api from '../api.js'
 export default {
 
   data() {
     return {
-      quote: ''
+      post: ''
     }
   },
 
   methods: {
-    getQuote() {
-      this.$http
-        .get('http://localhost:3001/api/random-quote', (data) => {
-          this.quote = data;
-        })
-        .error((err) => console.log(err))
+    async setNewPost() {
+      let data = await api.sendRequest('post','post/add', {
+        post: this.post
+      });
+  this.post = ''
     }
   }
 

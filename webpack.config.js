@@ -15,6 +15,28 @@ module.exports = {
   // how modules should be transformed
   module: {
     loaders: [
+      {
+        test: /\.css$/,
+        use: [
+         'vue-style-loader',
+          'style-loader', // the order is important. it executes in reverse order !
+          'css-loader' // this will load first !
+        ]
+      },
+      {
+        test: /\.(png|woff|woff2|eot|ttf|svg)$/,
+        loader: 'url-loader?limit=100000'
+    },
+    {
+      test: /\.s[ac]ss$/i,
+      use: [
+        // Creates `style` nodes from JS strings
+        "style-loader",
+        // Translates CSS into CommonJS
+        "css-loader",
+        // Compiles Sass to CSS
+        "sass-loader",
+      ]},
       // process *.vue files using vue-loader
       { test: /\.vue$/, loader: 'vue-loader' },
       // process *.js files using babel-loader
