@@ -31,6 +31,11 @@
             return {
                 user: auth.user
             }
+        },
+        methods: {
+            logout() {
+                auth.logout()
+            }
         }
     }
 </script>
