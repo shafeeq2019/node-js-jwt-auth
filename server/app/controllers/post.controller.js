@@ -1,7 +1,7 @@
 let core = require('../../core.js')
 let db = core.db;
 
-exports.getAll = async (req, res, next) => {
+exports.getUserPosts = async (req, res, next) => {
   try {
     let posts = await db.post.findAll({
       where: {
@@ -9,15 +9,44 @@ exports.getAll = async (req, res, next) => {
         isDeleted: false
       },
       attributes: {
-        include: [],
         exclude: ["isDeleted"]
-      }
+      },
+      include: []
     })
     res.status(200).send(posts);
   } catch (error) {
     res.status(404).send(error);
   }
 }
+
+exports.getAll = async (req, res, next) => {
+  try {
+    let posts = await db.post.findAll({
+      where: {
+        isDeleted: false
+      },
+      attributes: {
+        exclude: ["isDeleted", "password","userId"]
+      },
+      include: [{
+        model: core.db.user,
+        attributes:["id","username","email"]
+      },{
+        model: core.db.like,
+        attributes:["userId"],
+        include:[{
+          model: core.db.user,
+          attributes: ["username","email"]
+        }]
+      }
+    ]
+    })
+    res.status(200).send(posts);
+  } catch (error) {
+    res.status(404).send(error);
+  }
+}
+
 exports.add = async (req, res, next) => {
   try {
     let post = await db.post.create({

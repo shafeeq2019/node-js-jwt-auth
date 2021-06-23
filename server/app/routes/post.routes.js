@@ -27,9 +27,9 @@ var Router = express.Router();
 
 
 Router.get(
-  "/getAll",
+  "/getMyPosts",
   [authJwt.verifyToken],
-  controller.getAll
+  controller.getUserPosts
 );
 
 /**
@@ -66,6 +66,13 @@ Router.post(
   [authJwt.verifyToken],
   controller.delete
 );
+
+Router.get(
+  "/getAll",
+  [authJwt.verifyToken],
+  controller.getAll
+);
+
 
 
 

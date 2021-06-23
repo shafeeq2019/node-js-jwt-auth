@@ -3,7 +3,8 @@ import VueRouter from "vue-router";
 import Home from '../components/Home.vue';
 import Login from '../components/Login.vue';
 import Signup from '../components/Signup.vue';
-import SecretQuote from '../components/SecretQuote.vue';
+import UserPosts from '../components/UserPosts.vue';
+import Developing from '../components/Developing.vue';
 
 Vue.use(VueRouter);
 
@@ -15,9 +16,9 @@ export default new VueRouter({
       component: Login
     },
     {
-      path: '/secretquote',
-      name: 'secretquote',
-      component: SecretQuote
+      path: '/myPosts',
+      name: 'myPosts',
+      component: UserPosts
     },
     {
       path: '/home',
@@ -28,6 +29,11 @@ export default new VueRouter({
       path: '/signup',
       name: 'signup',
       component: Signup
+    },
+    {
+      path:'/developing',
+      name:'developing',
+      component: Developing
     }
   ]
 })

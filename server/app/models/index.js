@@ -53,7 +53,7 @@ db.token.belongsTo(db.user);
 db.user.hasMany(db.like);
 db.like.belongsTo(db.user);
 
-db.post.hasOne(db.like);
+db.post.hasMany(db.like);
 db.like.belongsTo(db.post);
 
 //comments
