@@ -30,6 +30,7 @@ db.post = require("../models/post.model.js")(sequelize, Sequelize);
 db.token = require("../models/token.model.js")(sequelize, Sequelize);
 db.like = require("../models/like.model.js")(sequelize, Sequelize)
 db.comment = require("../models/comment.model.js")(sequelize, Sequelize)
+db.scope = require("../models/scope.model.js")(sequelize, Sequelize)
 
 
 db.role.belongsToMany(db.user, {
@@ -62,6 +63,10 @@ db.comment.belongsTo(db.post,  { foreignKey: { allowNull: false }, onDelete: 'CA
 
 db.user.hasMany(db.comment);
 db.comment.belongsTo(db.user)
+
+db.scope.hasOne(db.post, { foreignKey: { allowNull: false }});
+db.post.belongsTo(db.scope, { foreignKey: { allowNull: false }});
+
 
 
 

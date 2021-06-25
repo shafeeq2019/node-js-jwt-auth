@@ -1,27 +1,21 @@
 <template>
-<div>
-  <NavBar/>
-  <div class="container">
+  <div>
+    <NavBar />
     <router-view></router-view>
   </div>
-</div>
 </template>
 
 <script>
-import auth from '../auth'
-import NavBar from './NavBar.vue'
+import auth from "../auth";
+import NavBar from "./NavBar.vue";
 export default {
   components: {
-    NavBar
+    NavBar,
   },
   data() {
-    return {
-  
-    }
+    return {};
   },
 
-  methods: {
-
-  }
-}
+  methods: {},
+};
 </script>

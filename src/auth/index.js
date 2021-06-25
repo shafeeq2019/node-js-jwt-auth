@@ -13,6 +13,7 @@ export default {
   login(context, creds, redirect) {
     api.sendRequest('post',"auth/signin", creds).then((data) => {
       localStorage.setItem('id_token', data.accessToken)
+      localStorage.setItem('userID', data.id);
       this.user.authenticated = true
       if(redirect) {
         router.push(redirect)        
@@ -36,8 +37,8 @@ export default {
   },
 
   logout() {
-    console.log("test")
-    localStorage.removeItem('id_token')
+    localStorage.removeItem('id_token');
+    localStorage.removeItem('userID');
     this.user.authenticated = false
   },
 

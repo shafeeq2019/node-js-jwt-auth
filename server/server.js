@@ -51,14 +51,13 @@ app.use("/",function(req, res, next) {
 
 // database
 const db = require("./app/models");
-const Role = db.role;
 
 db.sequelize.sync();
 // force: true will drop the table if it already exists
 // db.sequelize.sync({force: true}).then(() => {
-//   console.log('Drop and Resync Database with { force: true }');
+//  console.log('Drop and Resync Database with { force: true }');
 //   initial();
-// });
+//  });
 
 // simple route
 app.get("/", (req, res) => {
@@ -75,20 +74,33 @@ app.listen(PORT, () => {
 });
 
 function initial() {
-  Role.create({
+  db.role.create({
     id: 1,
     name: "user"
   });
 
-  Role.create({
+  db.role.create({
     id: 2,
     name: "moderator"
   });
 
-  Role.create({
+  db.role.create({
     id: 3,
     name: "admin"
   });
+
+  db.scope.create({
+    id: 1,
+    name: "public"
+  });
+
+  db.scope.create({
+    id: 2,
+    name: "follower"
+  });
+
+  db.scope.create({
+    id: 3,
+    name: "private"
+  });
 }
-
-
