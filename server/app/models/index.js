@@ -31,7 +31,7 @@ db.token = require("../models/token.model.js")(sequelize, Sequelize);
 db.like = require("../models/like.model.js")(sequelize, Sequelize)
 db.comment = require("../models/comment.model.js")(sequelize, Sequelize)
 db.scope = require("../models/scope.model.js")(sequelize, Sequelize)
-
+db.follower = require("../models/follower.model.js")(sequelize, Sequelize)
 
 db.role.belongsToMany(db.user, {
   through: "user_roles",
@@ -67,8 +67,11 @@ db.comment.belongsTo(db.user)
 db.scope.hasOne(db.post, { foreignKey: { allowNull: false }});
 db.post.belongsTo(db.scope, { foreignKey: { allowNull: false }});
 
+//follower
 
-
+//db.user.hasMany(db.follower);
+db.follower.belongsTo(db.user, { as: 'followed', foreignKey: {field: 'followedId', allowNull: false}});
+db.follower.belongsTo(db.user, { as: 'follower', foreignKey: {field: 'followerId', allowNull: false}});
 
 
 db.ROLES = ["user", "admin", "moderator"];

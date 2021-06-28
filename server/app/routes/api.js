@@ -8,6 +8,7 @@ let api = {
   post: require('./post.routes'),
   comment: require('./comment.routes'),
   like: require('./like.routes'),
+  follower: require('./follower.routes'),
 }
 
 Router.use("/api-docs", swagggerController);
