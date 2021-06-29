@@ -23,7 +23,7 @@ exports.add = async (req, res, next) => {
         });
         if (follow[0] == 0) {
             let follower = await db.follower.create({
-                userId: req.userId,
+                followerId: req.userId,
                 followedId: req.body.followedId
             });
             delete follower.dataValues["unfollowDate"];

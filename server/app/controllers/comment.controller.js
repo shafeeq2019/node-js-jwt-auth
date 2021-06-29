@@ -33,3 +33,23 @@ exports.update = async (req, res, next) => {
     res.status(404).send(e.message);
   }
 }
+
+exports.get = async (req, res, next) => {
+  try {
+    let comments = await db.comment.findAll({
+      where: {
+        postId: req.body.postId,
+        isDeleted: false
+      },
+      order: [
+        ['createdAt', 'DESC']
+      ],
+      attributes: {
+        exclude: ["isDeleted"]
+      }
+    })
+    res.status(200).send(comments)
+  } catch (e) {
+    res.status(404).send(e.message);
+  }
+}

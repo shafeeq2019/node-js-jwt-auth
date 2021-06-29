@@ -1,10 +1,20 @@
 <template>
   <div>
  
-<div class="text-center my-3">
-  <b-button v-b-popover.hover.top="'I am popover directive content!'" title="Popover Title">
-    Hover Me
-  </b-button>
+   <b-modal
+      id="modal-sm"
+      size="sm"
+      scrollable
+      title="Post liked by"
+      :hide-footer="true"
+      :hide-header-close="true"
+    >
+      <b-list-group flush>
+        <b-list-group-item href="#" v-for="like in postLikes">{{
+          like.user.username
+        }}</b-list-group-item>
+      </b-list-group>
+    </b-modal>
 
 
 </div>

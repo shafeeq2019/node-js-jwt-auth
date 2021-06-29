@@ -9,6 +9,10 @@ module.exports = (sequelize, Sequelize) => {
     comment: {
       type: Sequelize.STRING(10000),
       allowNull: false
+    },
+    isDeleted: {
+      type: Sequelize.BOOLEAN,
+      defaultValue: false
     }
   })
 

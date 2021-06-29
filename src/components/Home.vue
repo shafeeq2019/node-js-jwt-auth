@@ -14,7 +14,11 @@
                 {{ post.text }}
               </b-card-text>
               <b-popover :target="'' + i" triggers="hover focus">
-                <b-button variant="outline-primary"   size="sm">
+                <b-button
+                  variant="outline-primary"
+                  size="sm"
+                  @click="unfollow(post.user.id)"
+                >
                   <b-icon icon="x"></b-icon> unfollow
                 </b-button>
               </b-popover>
@@ -50,11 +54,33 @@
                   >
                     <b-icon icon="heart" aria-label="Help"></b-icon>
                   </b-button>
+                  <b-button
+                    size="sm"
+                    style="float: right; margin-right: 2px"
+                    @click="getComments(post.id)"
+                  >
+                    <b-icon icon="chat-text" aria-label="Help"></b-icon>
+                  </b-button>
                 </small>
               </template>
             </b-card>
           </div>
         </b-col>
+        <!-- comments -->
+        <b-collapse :id="'' + post.id">
+          <b-card>
+            <b-form-input
+              v-model="newComment"
+              placeholder="write a comment !"
+              v-on:keyup.enter="addNewComment(post.id)" style="margin-bottom:5px"
+            ></b-form-input>
+            <b-list-group v-if="comments.length > 0">
+              <b-list-group-item button v-for="c in comments">{{
+                c.comment
+              }}</b-list-group-item>
+            </b-list-group>
+          </b-card>
+        </b-collapse>
       </b-row>
     </b-container>
     <!-- likes modal -->
@@ -72,6 +98,20 @@
         }}</b-list-group-item>
       </b-list-group>
     </b-modal>
+    <!-- comments modal -->
+    <b-modal
+      id="modal-prevent-closing"
+      ref="modal"
+      title="Comments"
+      :hide-header-close="true"
+    >
+      <b-list-group>
+        <b-list-group-item button>Button item</b-list-group-item>
+        <b-list-group-item button>I am a button</b-list-group-item>
+        <b-list-group-item button disabled>Disabled button</b-list-group-item>
+        <b-list-group-item button>This is a button too</b-list-group-item>
+      </b-list-group>
+    </b-modal>
   </div>
 </template>
 <script>
@@ -85,10 +125,23 @@ export default {
       post: "",
       posts: "",
       postLikes: "",
+      comments: [],
+      newComment: "",
     };
   },
 
   methods: {
+    async addNewComment(postId) {
+      let newCommentRes = await api.sendRequest("post", "comment/add", {
+        postId: postId,
+        comment: this.newComment,
+      });
+      let getCommentsRes = await api.sendRequest("post", "comment/get", {
+        postId: postId,
+      });
+      this.comments = getCommentsRes;
+      this.newComment = "";
+    },
     showLikeButton(likes) {
       for (var l of likes) {
         console.log(l);
@@ -114,22 +167,34 @@ export default {
         post: this.post,
       });
       this.post = "";
-      this.getAllPosts();
+      this.getFollowersPosts();
     },
-    async getAllPosts() {
+    async getFollowersPosts() {
       let data = await api.sendRequest("get", "post/getFollowersPosts");
-      console.log(data);
       this.posts = data;
     },
     async addLike(postId) {
       let data = await api.sendRequest("post", "like/add", {
         postId: postId,
       });
-      this.getAllPosts();
+      this.getFollowersPosts();
+    },
+    async unfollow(userId) {
+      let data = await api.sendRequest("post", "follower/delete", {
+        followedId: userId,
+      });
+      this.getFollowersPosts();
+    },
+    async getComments(postId) {
+      let data = await api.sendRequest("post", "comment/get", {
+        postId: postId,
+      });
+      this.comments = data;
+      this.$root.$emit("bv::toggle::collapse", `${postId}`);
     },
   },
   mounted() {
-    this.getAllPosts();
+    this.getFollowersPosts();
   },
 };
 </script>

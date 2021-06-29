@@ -36,6 +36,8 @@ Router.use(function (req, res, next) {
  */
 Router.post("/add", [authJwt.verifyToken], controller.add);
 
+Router.post("/get", [authJwt.verifyToken], controller.get);
+
 Router.post("/update", [authJwt.verifyToken], controller.update);
 
 exports.router = Router;
