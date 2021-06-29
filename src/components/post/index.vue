@@ -2,22 +2,15 @@
   <div>
     <b-card :header="post.user.username + ' ' + post.user.id">
       <template #header>
-        <span :id="'' + i">
+        <span :id="post.user.id">
           {{ post.user.username }}
         </span>
       </template>
       <b-card-text>
         {{ post.text }}
       </b-card-text>
-      <b-popover :target="'' + i" triggers="hover focus">
-        <b-button
-          variant="outline-primary"
-          size="sm"
-          @click="unfollow(post.user.id)"
-        >
-          <b-icon icon="x"></b-icon> unfollow
-        </b-button>
-      </b-popover>
+      <popover :postUserId="post.user.id"></popover>
+
       <template #footer>
         <small class="text-muted"
           >{{ post.createdAt }}
@@ -66,9 +59,11 @@
 <script>
 import api from "../../api.js";
 import comment from "./comment.vue";
+import popover from "./popover.vue";
 export default {
   components: {
     comment,
+    popover,
   },
   props: {
     post: "",
@@ -106,11 +101,9 @@ export default {
         post: this.post,
       });
       this.post = "";
-      this.$parent.getFollowersPosts();
     },
     async getFollowersPosts() {
-      let data = await api.sendRequest("get", "post/getFollowersPosts");
-      this.posts = data;
+      this.$parent.getFollowersPosts();
     },
     async addLike(postId) {
       let data = await api.sendRequest("post", "like/add", {
@@ -118,15 +111,13 @@ export default {
       });
       this.$parent.getFollowersPosts();
     },
-    async unfollow(userId) {
-      let data = await api.sendRequest("post", "follower/delete", {
-        followedId: userId,
-      });
-      this.$parent.getFollowersPosts();
-    },
+
     async getComments(postId) {
       this.$root.$emit("bv::toggle::collapse", `${postId}`);
     },
   },
+  mounted() {
+ 
+  }
 };
 </script>

@@ -5,6 +5,7 @@ import Login from '../components/Login.vue';
 import Signup from '../components/Signup.vue';
 import UserPosts from '../components/UserPosts.vue';
 import Developing from '../components/Developing.vue';
+import Profile from '../components/Profile.vue';
 
 Vue.use(VueRouter);
 
@@ -34,6 +35,11 @@ export default new VueRouter({
       path:'/developing',
       name:'developing',
       component: Developing
+    },
+    {
+      path:'/profile',
+      name:'profile',
+      component: Profile
     }
   ]
 })

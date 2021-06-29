@@ -10,9 +10,10 @@
           style="margin-bottom: 5px"
         ></b-form-input>
         <b-list-group v-if="comments[post.id]">
-          <b-list-group-item button v-for="c in comments[post.id]">{{
-            c.comment
-          }}</b-list-group-item>
+          <b-list-group-item button v-for="c in comments[post.id]">
+          <span style=" font-weight: bold;"> {{c.user.username}}</span> : {{ c.comment}}
+          <popover></popover>
+          </b-list-group-item>
         </b-list-group>
       </b-card>
     </b-collapse>
@@ -20,7 +21,11 @@
 </template>
 <script>
 import api from "../../api.js";
+import popover from "./popover.vue";
 export default {
+  components: {
+    popover
+  },
   props: {
     post: "",
   },
