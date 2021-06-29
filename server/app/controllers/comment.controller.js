@@ -46,7 +46,11 @@ exports.get = async (req, res, next) => {
       ],
       attributes: {
         exclude: ["isDeleted"]
-      }
+      },
+      include:[
+        {model: db.user
+        ,attributes: ["id","username", "email"]}
+      ]
     })
     res.status(200).send(comments)
   } catch (e) {

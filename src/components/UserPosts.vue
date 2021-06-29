@@ -13,8 +13,7 @@
           <b-dropdown
             id="dropdown-1"
             :text="selecetdScope.name"
-            v-model="scope"
-          >
+        > 
             <b-dropdown-item v-for="s in scopes" @click="selecetdScope = s">{{
               s.name
             }}</b-dropdown-item>
@@ -101,7 +100,6 @@ export default {
     },
     showLikeButton(likes) {
       for (var l of likes) {
-        console.log(l);
         if (l.userId == this.userId) {
           return false;
         }
