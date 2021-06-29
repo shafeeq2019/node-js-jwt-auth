@@ -68,13 +68,13 @@ db.scope.hasOne(db.post, { foreignKey: { allowNull: false }});
 db.post.belongsTo(db.scope, { foreignKey: { allowNull: false }});
 
 //follower
-
-//db.user.hasMany(db.follower);
-db.follower.belongsTo(db.user, { as: 'followed', foreignKey: {field: 'followedId', allowNull: false}});
-db.follower.belongsTo(db.user, { as: 'follower', foreignKey: {field: 'followerId', allowNull: false}});
+db.user.hasMany(db.follower);
+db.follower.belongsTo(db.user, { as: 'follower', foreignKey: {field: 'userId', allowNull: false, unique: 'compositeIndex' }});
+db.follower.belongsTo(db.user, { as: 'followed', foreignKey: {field: 'followedId', allowNull: false, unique: 'compositeIndex' }});
 
 
 db.ROLES = ["user", "admin", "moderator"];
+
 
 module.exports = db;
 

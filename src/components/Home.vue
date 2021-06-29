@@ -1,13 +1,23 @@
 <template>
   <div>
     <b-container>
-      <b-row class="mt-3 mb-3" v-for="post in posts">
+      <b-row class="mt-3 mb-3" v-for="(post, i) in posts">
         <b-col cols="12">
           <div>
-            <b-card :header="post.user.username">
+            <b-card :header="post.user.username + ' ' + post.user.id">
+              <template #header>
+                <span :id="'' + i">
+                  {{ post.user.username }}
+                </span>
+              </template>
               <b-card-text>
                 {{ post.text }}
               </b-card-text>
+              <b-popover :target="'' + i" triggers="hover focus">
+                <b-button variant="outline-primary"   size="sm">
+                  <b-icon icon="x"></b-icon> unfollow
+                </b-button>
+              </b-popover>
               <template #footer>
                 <small class="text-muted"
                   >{{ post.createdAt }}
@@ -107,7 +117,7 @@ export default {
       this.getAllPosts();
     },
     async getAllPosts() {
-      let data = await api.sendRequest("get", "post/getAll");
+      let data = await api.sendRequest("get", "post/getFollowersPosts");
       console.log(data);
       this.posts = data;
     },

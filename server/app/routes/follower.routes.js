@@ -11,6 +11,18 @@ const {
     controller.add
   );
   
+  Router.post(
+    "/delete",
+    [authJwt.verifyToken],
+    controller.delete
+  );
+
+  Router.get(
+    "/getMyFollowers",
+    [authJwt.verifyToken],
+    controller.getUserFollowers
+  );
+  
 
   
   
