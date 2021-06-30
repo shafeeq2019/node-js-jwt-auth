@@ -68,9 +68,74 @@ exports.delete = async (req, res, next) => {
 
 exports.getUserFollowers = async (req, res, next) => {
     try {
-
+        let followers = await db.follower.findAll({
+            where: {
+                followedId: req.userId,
+                unfollowDate: null
+            },
+            attributes: {
+                exclude: ["unfollowDate", "userId", "followerId"]
+            },
+            include: [{
+                model: db.user,
+                as: 'follower',
+                attributes: ["id", "username", "email"]
+            }]
+        });
+        res.send(followers)
 
     } catch (error) {
-        res.status(404).send(error);
+        res.status(404).send(error.message);
+    }
+}
+
+exports.getFollowers = async (req, res, next) => {
+    try {
+        let check = await checkUsersFollow(req, res);
+        if (check) {
+            let followers = await db.follower.findAll({
+                where: {
+                    followerId: req.body.userId,
+                    unfollowDate: null
+                },
+                attributes: {
+                    exclude: ["unfollowDate", "userId", "followerId"]
+                },
+                include: [{
+                    model: db.user,
+                    as: 'followed',
+                    attributes: ["id", "username", "email"]
+                }]
+            });
+            res.send(followers)
+        } else {
+            res.status(404).send("no right!")
+        }
+    } catch (error) {
+        res.status(404).send(error.message);
+    }
+}
+
+let checkUsersFollow = async (req, res) => {
+    let followers = await db.follower.findAll({
+        where: {
+            [op.or]: [{
+                    followedId: req.body.userId,
+                    followerId: req.userId,
+                    unfollowDate: null
+                },
+                {
+                    followedId: req.userId,
+                    followerId: req.body.userId,
+                    unfollowDate: null
+                }
+            ]
+        }
+    });
+    console.log()
+    if (followers.length == 2) {
+        return true;
+    } else {
+        return false;
     }
 }

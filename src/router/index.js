@@ -10,16 +10,10 @@ import Profile from '../components/Profile.vue';
 Vue.use(VueRouter);
 
 export default new VueRouter({
-  routes: [
-    {
+  routes: [{
       path: '/login',
       name: 'login',
       component: Login
-    },
-    {
-      path: '/myPosts',
-      name: 'myPosts',
-      component: UserPosts
     },
     {
       path: '/home',
@@ -32,14 +26,21 @@ export default new VueRouter({
       component: Signup
     },
     {
-      path:'/developing',
-      name:'developing',
+      path: '/developing',
+      name: 'developing',
       component: Developing
     },
     {
-      path:'/profile',
-      name:'profile',
-      component: Profile
-    }
+      path: '/user/:id/profile',
+      name: 'profile',
+      component: Profile,
+      props: true
+    },
+    {
+      path: '/user/:id/myPosts',
+      name: 'myPosts',
+      component: UserPosts,
+      props: true
+    },
   ]
 })

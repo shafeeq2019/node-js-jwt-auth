@@ -18,10 +18,17 @@ const {
   );
 
   Router.get(
-    "/getMyFollowers",
+    "/getUserFollowers",
     [authJwt.verifyToken],
     controller.getUserFollowers
   );
+
+  Router.get(
+    "/getFollowers",
+    [authJwt.verifyToken],
+    controller.getFollowers
+  );
+  
   
 
   

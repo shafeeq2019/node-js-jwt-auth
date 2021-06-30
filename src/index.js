@@ -5,7 +5,10 @@ import VueResource from 'vue-resource'
 import auth from './auth'
 import router from './router'
 
-import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
+import {
+  BootstrapVue,
+  IconsPlugin
+} from 'bootstrap-vue'
 
 // // Import Bootstrap an BootstrapVue CSS files (order is important)
 import 'bootstrap/dist/css/bootstrap.css'
@@ -21,8 +24,17 @@ Vue.use(VueRouter)
 
 Vue.http.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('id_token');
 
-// Check the user's auth status when the app starts
-auth.checkAuth()
+
+
+router.beforeEach((to, from, next) => {
+  auth.checkAuth();
+  if (to.name !== 'login' && to.name !== 'signup' && !auth.user.authenticated) {
+    next('login');
+  } else {
+    auth.checkAuth();
+    next();
+  }
+})
 
 
 new Vue({
@@ -30,4 +42,3 @@ new Vue({
   router: router,
   render: h => h(App)
 });
-

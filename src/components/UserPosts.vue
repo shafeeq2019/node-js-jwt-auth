@@ -79,7 +79,7 @@ import api from "../api.js";
 export default {
   data() {
     return {
-      userId: localStorage.getItem("userID"),
+      userId: localStorage.getItem("userId"),
       posts: "",
       post: "",
       scopes: [

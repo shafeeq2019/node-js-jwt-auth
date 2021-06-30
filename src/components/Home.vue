@@ -35,7 +35,7 @@ export default {
   data() {
     return {
       user: auth.user,
-      userId: localStorage.getItem("userID"),
+      userId: localStorage.getItem("userId"),
       post: "",
       posts: "",
       postLikes: "",
