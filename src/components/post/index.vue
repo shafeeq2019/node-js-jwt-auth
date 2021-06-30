@@ -59,6 +59,7 @@
 <script>
 import api from "../../api.js";
 import comment from "./comment.vue";
+import auth from "../../auth";
 import popover from "./popover.vue";
 export default {
   components: {
@@ -79,7 +80,7 @@ export default {
   methods: {
     showLikeButton(likes) {
       for (var l of likes) {
-        if (l.userId == this.userId) {
+        if (l.userId == auth.user.userId) {
           return false;
         }
       }
