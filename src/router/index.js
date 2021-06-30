@@ -37,8 +37,8 @@ export default new VueRouter({
       props: true
     },
     {
-      path: '/user/:id/myPosts',
-      name: 'myPosts',
+      path: '/user/:id/posts',
+      name: 'posts',
       component: UserPosts,
       props: true
     },

@@ -27,7 +27,7 @@
               <em>User</em>
             </template>
             <b-dropdown-item @click="$router.push({ name: 'profile', params: { id: user.userId }})">Profile</b-dropdown-item>
-            <b-dropdown-item @click="$router.push({ name: 'myPosts', params: { id: user.userId }})">My posts</b-dropdown-item>
+            <b-dropdown-item @click="$router.push({ name: 'posts', params: { id: user.userId }})">My posts</b-dropdown-item>
             <b-dropdown-item to="/login" @click="logout()"
               >Sign Out</b-dropdown-item
             >
