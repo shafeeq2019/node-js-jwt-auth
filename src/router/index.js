@@ -3,9 +3,9 @@ import VueRouter from "vue-router";
 import Home from '../components/Home.vue';
 import Login from '../components/Login.vue';
 import Signup from '../components/Signup.vue';
-import UserPosts from '../components/UserPosts.vue';
+import UserPosts from '../components/User/UserPosts.vue';
 import Developing from '../components/Developing.vue';
-import Profile from '../components/Profile.vue';
+import Profile from '../components/User/Profile.vue';
 
 Vue.use(VueRouter);
 

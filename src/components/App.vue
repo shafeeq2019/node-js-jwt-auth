@@ -19,3 +19,12 @@ export default {
   methods: {},
 };
 </script>
+
+<style >
+label {
+  margin-bottom: 0.5rem;
+}
+.form-group {
+  margin-bottom: 1rem;
+}
+</style>

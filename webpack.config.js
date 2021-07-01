@@ -16,12 +16,12 @@ module.exports = {
   module: {
     loaders: [
       {
-        test: /\.css$/,
-        use: [
-         'vue-style-loader',
-          'style-loader', // the order is important. it executes in reverse order !
-          'css-loader' // this will load first !
-        ]
+        test: /\.css$/i,
+        loader: "css-loader",
+        options: {
+          // Using `local` value has same effect like using `modules: true`
+          modules: "global",
+        },
       },
       {
         test: /\.(png|woff|woff2|eot|ttf|svg)$/,
@@ -30,12 +30,10 @@ module.exports = {
     {
       test: /\.s[ac]ss$/i,
       use: [
-        // Creates `style` nodes from JS strings
-        "style-loader",
-        // Translates CSS into CommonJS
-        "css-loader",
-        // Compiles Sass to CSS
-        "sass-loader",
+        'style-loader',
+        'css-loader',
+        'postcss-loader',
+        'sass-loader'
       ]},
       // process *.vue files using vue-loader
       { test: /\.vue$/, loader: 'vue-loader' },
