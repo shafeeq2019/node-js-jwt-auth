@@ -19,3 +19,30 @@ exports.adminBoard = (req, res) => {
 exports.moderatorBoard = (req, res) => {
   res.status(200).send("Moderator Content.");
 };
+
+
+exports.getUserInfo = async (req, res) => {
+  try {
+    let user = await db.user.findOne({
+      where: {
+        id: req.userId
+      },
+      attributes: {
+        exclude: ["password", "updatedAt"]
+      },
+      include: [{
+        model: db.follower,
+        attributes: ["createdAt"],
+        include: [{
+          model: db.user,
+          as: 'followed',
+          attributes: ["username", "email"]
+        }]
+      }]
+    });
+    res.status(200).send(user);
+  } catch (error) {
+    res.status(404).send(error);
+  }
+
+}

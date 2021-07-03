@@ -1,13 +1,13 @@
 <template>
   <b-container>
-    <b-row class="mt-3 mb-3">
+    <b-row class="mt-3">
       <b-col cols="12">
         <h2>Log In</h2>
         <p>Log in to your account to use this website</p>
         <div class="alert alert-danger" v-if="error" style="padding: 10px">
           <span>{{ error }}</span>
         </div>
-        <b-row class="mt-3 mb-3">
+        <b-row >
           <b-col cols="12">
             <div class="form-group">
               <input
@@ -19,7 +19,7 @@
             </div>
           </b-col>
         </b-row>
-        <b-row class="mt-3 mb-3">
+        <b-row >
           <b-col cols="12">
             <div class="form-group">
               <input

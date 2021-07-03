@@ -1,5 +1,3 @@
-
-
 let core = require('../../core.js')
 let db = core.db;
 

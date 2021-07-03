@@ -132,7 +132,7 @@ let checkUsersFollow = async (req, res) => {
             ]
         }
     });
-    console.log()
+
     if (followers.length == 2) {
         return true;
     } else {

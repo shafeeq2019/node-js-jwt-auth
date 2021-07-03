@@ -26,7 +26,7 @@ var Router = express.Router();
  */
 
 
-Router.get(
+Router.post(
   "/get",
   [authJwt.verifyToken],
   controller.get

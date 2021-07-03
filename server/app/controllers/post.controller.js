@@ -10,7 +10,7 @@ exports.get = async (req, res, next) => {
         ...(req.body.id && {
           id: req.body.id
         }),
-        userId: req.userId,
+        userId: req.body.userId ? req.body.userId : req.userId,
         isDeleted: false
       },
       order: [

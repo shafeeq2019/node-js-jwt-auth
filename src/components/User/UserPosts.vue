@@ -77,6 +77,9 @@ import auth from "../../auth";
 import api from "../../api.js";
 
 export default {
+    props: {
+    id: "",
+  },
   data() {
     return {
       userId: localStorage.getItem("userId"),
@@ -126,7 +129,9 @@ export default {
       this.getUserPosts();
     },
     async getUserPosts() {
-      let data = await api.sendRequest("get", "post/get");
+      let data = await api.sendRequest("post", "post/get", {
+        userId: this.id
+      });
       this.posts = data;
     },
   },

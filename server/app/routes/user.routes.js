@@ -47,5 +47,11 @@ Router.get(
   controller.adminBoard
 );
 
+Router.get(
+  "/getUserInfo",
+  [authJwt.verifyToken],
+  controller.getUserInfo
+);
+
 exports.router = Router;
 exports.path = 'user'
