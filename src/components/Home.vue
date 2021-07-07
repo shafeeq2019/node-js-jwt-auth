@@ -80,9 +80,9 @@ export default {
         post: this.post,
       });
       this.post = "";
-      this.getFollowersPosts();
+      this.getPosts();
     },
-    async getFollowersPosts() {
+    async getPosts() {
       let data = await api.sendRequest("get", "post/getFollowersPosts");
       this.posts = data;
     },
@@ -90,13 +90,13 @@ export default {
       let data = await api.sendRequest("post", "like/add", {
         postId: postId,
       });
-      this.getFollowersPosts();
+      this.getPosts();
     },
     async unfollow(userId) {
       let data = await api.sendRequest("post", "follower/delete", {
         followedId: userId,
       });
-      this.getFollowersPosts();
+      this.getPosts();
     },
     async getComments(postId) {
       let data = await api.sendRequest("post", "comment/get", {
@@ -107,7 +107,7 @@ export default {
     },
   },
   mounted() {
-    this.getFollowersPosts();
+    this.getPosts();
   },
 };
 </script>

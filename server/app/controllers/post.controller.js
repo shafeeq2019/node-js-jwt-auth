@@ -13,7 +13,10 @@ exports.get = async (req, res, next) => {
       where: {
         id: req.params.id,
         //userId: req.body.userId ? req.body.userId : req.userId,
-        isDeleted: false
+        isDeleted: false,
+        scopeId: {
+          [Op.or]: [1, 2]
+        }
       },
       order: [
         ['createdAt', 'DESC']
@@ -36,7 +39,7 @@ exports.get = async (req, res, next) => {
   }
 }
 
-//SQL Solution
+//SQL Solution - getFollowersPosts
 // exports.get = async (req, res, next) => {
 //   try {
 //     let data = await db.sequelize.query(`
@@ -148,6 +151,38 @@ exports.getAll = async (req, res, next) => {
     })
     res.status(200).send(posts);
   } catch (error) {
+    res.status(404).send(error);
+  }
+}
+
+exports.getUserPost = async (req, res, next) => {
+  try {
+    let posts = await db.post.findAll({
+      where: {
+        isDeleted: false,
+        userId: req.userId
+      },
+      order: [
+        ['createdAt', 'DESC']
+      ],
+      attributes: {
+        exclude: ["isDeleted", "password", "userId"]
+      },
+      include: [{
+        model: core.db.user,
+        attributes: ["id", "username", "email"]
+      }, {
+        model: core.db.like,
+        attributes: ["userId"],
+        include: [{
+          model: core.db.user,
+          attributes: ["username", "email"]
+        }]
+      }]
+    })
+    res.status(200).send(posts);
+  } catch (error) {
+    console.log(error)
     res.status(404).send(error);
   }
 }

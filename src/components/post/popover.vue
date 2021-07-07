@@ -31,7 +31,7 @@ export default {
       let data = await api.sendRequest("post", "follower/delete", {
         followedId: userId,
       });
-      this.$parent.getFollowersPosts();
+      this.$parent.getPosts();
     },
   },
   mounted() {},

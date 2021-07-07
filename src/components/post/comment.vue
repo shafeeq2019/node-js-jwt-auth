@@ -37,20 +37,16 @@ export default {
   },
   methods: {
     async addNewComment(postId) {
-      let newCommentRes = await api.sendRequest("post", "comment/add", {
+      let newCommentRes = await api.sendRequest("post", "comment", {
         postId: postId,
         comment: this.newComment[postId],
       });
-      let getCommentsRes = await api.sendRequest("post", "comment/get", {
-        postId: postId,
-      });
+      let getCommentsRes = await api.sendRequest("get", `comment/getByPostId/${postId}`);
       this.comments[postId] = getCommentsRes;
       this.newComment[postId] = "";
     },
     async getComments(postId) {
-      let data = await api.sendRequest("post", "comment/get", {
-        postId: postId,
-      });
+      let data = await api.sendRequest("get", `comment/getByPostId/${postId}`);
       this.$set(this.comments, postId, data);
     },
   },

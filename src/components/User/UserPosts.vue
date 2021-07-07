@@ -1,6 +1,6 @@
 <template>
   <b-container style="margin-top: 20px">
-    <b-row style="margin-bottom: 10px">
+    <b-row>
       <b-col cols="11">
         <b-form-input
           v-model="post"
@@ -10,10 +10,7 @@
       </b-col>
       <b-col cols="1">
         <div>
-          <b-dropdown
-            id="dropdown-1"
-            :text="selecetdScope.name"
-        > 
+          <b-dropdown id="dropdown-1" :text="selecetdScope.name">
             <b-dropdown-item v-for="s in scopes" @click="selecetdScope = s">{{
               s.name
             }}</b-dropdown-item>
@@ -21,63 +18,31 @@
         </div>
       </b-col>
     </b-row>
-    <b-row class="mt-3 mb-3" v-for="post in posts">
+    <b-row>
       <b-col cols="12">
+        <!-- <p><b>User Infos:</b></p> -->
         <div>
-          <b-card header="">
-            <b-card-text>
-              {{ post.text }}
-            </b-card-text>
-            <template #footer>
-              <small class="text-muted"
-                >{{ post.createdAt }}
-                <span v-if="post.likes.length > 0">liked by</span>
-                <span v-for="(like, index) in post.likes">
-                  <span v-if="index < 2">{{ like.user.username }}</span>
-                  <span v-if="checkComma(post.likes, index)">, </span>
-                </span>
-                <span
-                  v-if="post.likes.length > 2"
-                  class="other-likes"
-                  @click="showLikes(post.likes)"
-                  >and {{ post.likes.length - 2 }} more
-                </span>
-                <b-button
-                  size="sm"
-                  style="float: right"
-                  variant="danger"
-                  @click="addLike(post.id)"
-                  v-if="showLikeButton(post.likes)"
-                >
-                  <b-icon icon="heart-fill" aria-label="Help"></b-icon>
-                </b-button>
-                <b-button
-                  size="sm"
-                  style="float: right"
-                  variant="danger"
-                  @click="addLike(post.id)"
-                  v-if="!showLikeButton(post.likes)"
-                >
-                  <b-icon icon="heart" aria-label="Help"></b-icon>
-                </b-button>
-              </small> </template
-          ></b-card></div></b-col></b-row
-  ></b-container>
-</template>
-            </b-card>
-          </div>
-        </b-col>
-      </b-row>
-  </b-container
-  </div>
+          <b-row class="mt-3 mb-3" v-for="(post, i) in posts">
+            <b-col cols="12">
+              <post :post="post" :i="i"></post>
+            </b-col>
+          </b-row>
+        </div>
+      </b-col>
+    </b-row>
+  </b-container>
 </template>
 
 <script>
 import auth from "../../auth";
 import api from "../../api.js";
+import post from "../post/index.vue";
 
 export default {
-    props: {
+  components: {
+    post,
+  },
+  props: {
     id: "",
   },
   data() {
@@ -95,43 +60,16 @@ export default {
   },
 
   methods: {
-    async addLike(postId) {
-      let data = await api.sendRequest("post", "like/add", {
-        postId: postId,
-      });
-      this.getUserPosts();
-    },
-    showLikeButton(likes) {
-      for (var l of likes) {
-        if (l.userId == this.userId) {
-          return false;
-        }
-      }
-      return true;
-    },
-    checkComma(likes, index) {
-      if (likes.length == 1) {
-        return false;
-      } else if (likes.length > 1 && index == 0) {
-        return true;
-      }
-    },
-    showLikes(likes) {
-      this.postLikes = likes;
-      this.$bvModal.show("modal-sm");
-    },
     async setNewPost() {
-      let data = await api.sendRequest("post", "post/add", {
+      let data = await api.sendRequest("post", "post", {
         post: this.post,
         scope: this.selecetdScope.id,
       });
       this.post = "";
-      this.getUserPosts();
+      this.getPosts();
     },
-    async getUserPosts() {
-      let data = await api.sendRequest("post", "post/get", {
-        userId: this.id
-      });
+    async getPosts() {
+      let data = await api.sendRequest("get", "post/getUserPost");
       this.posts = data;
     },
   },
@@ -142,7 +80,7 @@ export default {
     },
   },
   mounted() {
-    this.getUserPosts();
+    this.getPosts();
   },
 };
 </script>

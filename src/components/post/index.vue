@@ -50,6 +50,14 @@
           >
             <b-icon icon="chat-text" aria-label="Help"></b-icon>
           </b-button>
+          <b-button
+            size="sm"
+            style="float: right; margin-right: 2px"
+            @click="deletePost(post.id)"
+            v-if="post.user.id == userId"
+          >
+            <b-icon icon="trash" aria-label="Help"></b-icon>
+          </b-button>
         </small>
       </template>
     </b-card>
@@ -74,7 +82,7 @@ export default {
     return {
       userId: localStorage.getItem("userID"),
       posts: "",
-      postLikes: "",
+      postLikes: ""
     };
   },
   methods: {
@@ -103,22 +111,24 @@ export default {
       });
       this.post = "";
     },
-    async getFollowersPosts() {
-      this.$parent.getFollowersPosts();
+    async getPosts() {
+      this.$parent.getPosts();
     },
     async addLike(postId) {
       let data = await api.sendRequest("post", "like/add", {
         postId: postId,
       });
-      this.$parent.getFollowersPosts();
+      this.$parent.getPosts();
     },
 
     async getComments(postId) {
       this.$root.$emit("bv::toggle::collapse", `${postId}`);
     },
+    async deletePost(postId) {
+      let data = await api.sendRequest("delete", `post/${postId}`);
+      this.$parent.getPosts();
+    },
   },
-  mounted() {
- 
-  }
+  mounted() {},
 };
 </script>

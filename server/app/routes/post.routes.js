@@ -68,6 +68,12 @@ Router.get(
   controller.getFollowersPosts
 );
 
+Router.get(
+  "/getUserPost",
+  [authJwt.verifyToken],
+  controller.getUserPost
+);
+
 
 Router.get(
   "/",

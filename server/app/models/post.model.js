@@ -8,8 +8,16 @@ module.exports = (sequelize, Sequelize) => {
     isDeleted: {
       type: Sequelize.BOOLEAN,
       defaultValue: false
+    },
+  },
+  {
+    hooks: {
+      afterCreate(post, option) {
+        console.log(post)
+      }
     }
   });
 
   return Post;
 };
+
