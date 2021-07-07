@@ -34,11 +34,11 @@ Router.use(function (req, res, next) {
  *        description: test
  * 
  */
-Router.post("/add", [authJwt.verifyToken], controller.add);
-
-Router.post("/get", [authJwt.verifyToken], controller.get);
-
-Router.post("/update", [authJwt.verifyToken], controller.update);
+Router.post("/", [authJwt.verifyToken], controller.add);
+Router.get("/:id", [authJwt.verifyToken], controller.get);
+Router.get("/getByPostId/:id", [authJwt.verifyToken], controller.getByPostId);
+Router.put("/:id", [authJwt.verifyToken], controller.update);
+Router.delete("/:id", [authJwt.verifyToken], controller.delete);
 
 exports.router = Router;
 exports.path = 'comment'

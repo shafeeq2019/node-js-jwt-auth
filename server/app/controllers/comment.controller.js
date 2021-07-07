@@ -18,25 +18,26 @@ exports.add = async (req, res, next) => {
 
 exports.update = async (req, res, next) => {
   try {
-    let updatedComment = db.comment.update({
+    let updatedComment = await db.comment.update({
       comment: req.body.comment
     }, {
       where: {
-        id: req.body.commentId,
+        id: req.params.id,
         userId: req.userId
-      }
+      },
+      returning: true
     });
-    res.status(200).send(updatedComment)
+    res.status(200).send(updatedComment[1])
   } catch (e) {
     res.status(404).send(e.message);
   }
 }
 
-exports.get = async (req, res, next) => {
+exports.getByPostId = async (req, res, next) => {
   try {
     let comments = await db.comment.findAll({
       where: {
-        postId: req.body.postId,
+        postId: req.params.id,
         isDeleted: false
       },
       order: [
@@ -55,3 +56,36 @@ exports.get = async (req, res, next) => {
     res.status(404).send(e.message);
   }
 }
+
+exports.get = async (req, res, next) => {
+  try {
+    let comments = await db.comment.findAll({
+      where: {
+        id: req.params.id,
+        isDeleted: false
+      },
+      order: [
+        ['createdAt', 'DESC']
+      ],
+      attributes: {
+        exclude: ["isDeleted"]
+      },
+      include:[
+        {model: db.user
+        ,attributes: ["id","username", "email"]}
+      ]
+    })
+    res.status(200).send(comments)
+  } catch (e) {
+    res.status(404).send(e.message);
+  }
+}
+
+exports.delete = async (req, res, next) => {
+
+}
+
+
+
+
+

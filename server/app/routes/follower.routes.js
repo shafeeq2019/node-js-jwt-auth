@@ -6,13 +6,13 @@ const {
   var Router = express.Router();
   
   Router.post(
-    "/add",
+    "/",
     [authJwt.verifyToken],
     controller.add
   );
   
-  Router.post(
-    "/delete",
+  Router.delete(
+    "/:id",
     [authJwt.verifyToken],
     controller.delete
   );
@@ -24,13 +24,10 @@ const {
   );
 
   Router.get(
-    "/getFollowers",
+    "/getFollowers/:id",
     [authJwt.verifyToken],
     controller.getFollowers
   );
-  
-  
-
   
   
   exports.router = Router;

@@ -47,7 +47,7 @@ exports.delete = async (req, res, next) => {
         let follow = await db.follower.findOne({
             where: {
                 followerId: req.userId,
-                followedId: req.body.followedId,
+                followedId: req.params.id,
                 unfollowDate: null
             }
         });
@@ -95,7 +95,7 @@ exports.getFollowers = async (req, res, next) => {
         if (check) {
             let followers = await db.follower.findAll({
                 where: {
-                    followerId: req.body.userId,
+                    followerId: req.params.id,
                     unfollowDate: null
                 },
                 attributes: {
@@ -120,13 +120,13 @@ let checkUsersFollow = async (req, res) => {
     let followers = await db.follower.findAll({
         where: {
             [op.or]: [{
-                    followedId: req.body.userId,
+                    followedId: req.params.id,
                     followerId: req.userId,
                     unfollowDate: null
                 },
                 {
                     followedId: req.userId,
-                    followerId: req.body.userId,
+                    followerId: req.params.id,
                     unfollowDate: null
                 }
             ]

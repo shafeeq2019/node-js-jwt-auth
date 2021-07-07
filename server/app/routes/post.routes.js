@@ -26,12 +26,6 @@ var Router = express.Router();
  */
 
 
-Router.post(
-  "/get",
-  [authJwt.verifyToken],
-  controller.get
-);
-
 /**
  * @swagger
  * /post/add:
@@ -56,22 +50,17 @@ Router.post(
 
 
 Router.post(
-  "/add",
+  "/",
   [authJwt.verifyToken],
   controller.add
 );
 
-Router.post(
-  "/delete",
+Router.delete(
+  "/:id",
   [authJwt.verifyToken],
   controller.delete
 );
 
-Router.get(
-  "/getAll",
-  [authJwt.verifyToken],
-  controller.getAll
-);
 
 Router.get(
   "/getFollowersPosts",
@@ -79,6 +68,19 @@ Router.get(
   controller.getFollowersPosts
 );
 
+
+Router.get(
+  "/",
+  [authJwt.verifyToken],
+  controller.getAll
+);
+
+
+Router.get(
+  "/:id",
+  [authJwt.verifyToken],
+  controller.get
+);
 
 
 
