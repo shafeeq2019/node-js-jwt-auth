@@ -160,7 +160,7 @@ exports.getUserPost = async (req, res, next) => {
     let posts = await db.post.findAll({
       where: {
         isDeleted: false,
-        userId: req.userId
+        userId: req.params.id
       },
       order: [
         ['createdAt', 'DESC']

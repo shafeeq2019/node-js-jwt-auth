@@ -17,11 +17,11 @@ const {
     controller.delete
   );
 
-  Router.get(
-    "/getUserFollowers",
-    [authJwt.verifyToken],
-    controller.getUserFollowers
-  );
+  // Router.get(
+  //   "/getUserFollowers",
+  //   [authJwt.verifyToken],
+  //   controller.getUserFollowers
+  // );
 
   Router.get(
     "/getFollowers/:id",

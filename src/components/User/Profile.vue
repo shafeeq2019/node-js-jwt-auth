@@ -4,7 +4,7 @@
       <b-col cols="2">
         <p><b>Followers:</b></p>
         <b-list-group>
-          <b-list-group-item v-for="follower in followers" button>{{
+          <b-list-group-item v-for="follower in followers" @click="$router.push({ name: 'profile', params: { id: follower.follower.id }})" button>{{
             follower.follower.username
           }}</b-list-group-item>
         </b-list-group>
@@ -13,6 +13,30 @@
       <b-col cols="8">
         <!-- <p><b>User Infos:</b></p> -->
         <div>
+          <b-row v-if="this.id == user.userId">
+            <b-col cols="10">
+              <b-form-input
+                v-model="post"
+                placeholder="Write a post"
+                v-on:keyup.enter="setNewPost"
+              ></b-form-input>
+            </b-col>
+            <b-col cols="2">
+              <div>
+                <b-dropdown
+                  id="dropdown-1"
+                  :text="selecetdScope.name"
+                  style="width: 100%"
+                >
+                  <b-dropdown-item
+                    v-for="s in scopes"
+                    @click="selecetdScope = s"
+                    >{{ s.name }}</b-dropdown-item
+                  >
+                </b-dropdown>
+              </div>
+            </b-col>
+          </b-row>
           <b-row class="mt-3 mb-3" v-for="(post, i) in posts">
             <b-col cols="12">
               <post :post="post" :i="i"></post>
@@ -66,35 +90,38 @@ export default {
   },
   data() {
     return {
+      user: auth.user,
       posts: "",
-      followers: "",
-      form: {
-        email: "",
-        name: "",
-        food: null,
-        checked: [],
-      },
-      foods: [
-        { text: "Select One", value: null },
-        "Carrots",
-        "Beans",
-        "Tomatoes",
-        "Corn",
-      ],
+      post: "",
       show: true,
+      followers: [],
+      scopes: [
+        { name: "public", id: 1 },
+        { name: "follower", id: 2 },
+        { name: "pivate", id: 3 },
+      ],
+      selecetdScope: { name: "public", id: 1 },
     };
   },
   methods: {
+    async setNewPost() {
+      let data = await api.sendRequest("post", "post", {
+        post: this.post,
+        scope: this.selecetdScope.id,
+      });
+      this.post = "";
+      this.getPosts();
+    },
     async getFollowers() {
-      let data = await api.sendRequest("get", "follower/getUserFollowers");
+      let data = await api.sendRequest("get", `follower/getFollowers/${this.id}`);
       this.followers = data;
     },
     async getPosts() {
-      let data = await api.sendRequest("get", "post/getUserpost");
+      let data = await api.sendRequest("get", `post/getUserpost/${this.id}`);
       this.posts = data;
     },
   },
-  mounted() {
+  created() {
     this.getFollowers();
     this.getPosts();
   },

@@ -69,7 +69,7 @@ Router.get(
 );
 
 Router.get(
-  "/getUserPost",
+  "/getUserPost/:id",
   [authJwt.verifyToken],
   controller.getUserPost
 );

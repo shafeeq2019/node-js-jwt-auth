@@ -54,7 +54,7 @@
             size="sm"
             style="float: right; margin-right: 2px"
             @click="deletePost(post.id)"
-            v-if="post.user.id == userId"
+            v-if="post.user.id == user.userId"
           >
             <b-icon icon="trash" aria-label="Help"></b-icon>
           </b-button>
@@ -80,7 +80,7 @@ export default {
   },
   data() {
     return {
-      userId: localStorage.getItem("userID"),
+      user: auth.user,
       posts: "",
       postLikes: ""
     };

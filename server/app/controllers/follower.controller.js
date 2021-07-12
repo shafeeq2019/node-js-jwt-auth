@@ -66,36 +66,36 @@ exports.delete = async (req, res, next) => {
 
 
 
-exports.getUserFollowers = async (req, res, next) => {
-    try {
-        let followers = await db.follower.findAll({
-            where: {
-                followedId: req.userId,
-                unfollowDate: null
-            },
-            attributes: {
-                exclude: ["unfollowDate", "userId", "followerId"]
-            },
-            include: [{
-                model: db.user,
-                as: 'follower',
-                attributes: ["id", "username", "email"]
-            }]
-        });
-        res.send(followers)
+// exports.getUserFollowers = async (req, res, next) => {
+//     try {
+//         let followers = await db.follower.findAll({
+//             where: {
+//                 followedId: req.userId,
+//                 unfollowDate: null
+//             },
+//             attributes: {
+//                 exclude: ["unfollowDate", "userId", "followerId"]
+//             },
+//             include: [{
+//                 model: db.user,
+//                 as: 'follower',
+//                 attributes: ["id", "username", "email"]
+//             }]
+//         });
+//         res.send(followers)
 
-    } catch (error) {
-        res.status(404).send(error.message);
-    }
-}
+//     } catch (error) {
+//         res.status(404).send(error.message);
+//     }
+// }
 
 exports.getFollowers = async (req, res, next) => {
     try {
-        let check = await checkUsersFollow(req, res);
+        let check = req.userId == req.params.id ? true : await checkUsersFollow(req, res);
         if (check) {
             let followers = await db.follower.findAll({
                 where: {
-                    followerId: req.params.id,
+                    followedId: req.params.id,
                     unfollowDate: null
                 },
                 attributes: {
@@ -103,7 +103,7 @@ exports.getFollowers = async (req, res, next) => {
                 },
                 include: [{
                     model: db.user,
-                    as: 'followed',
+                    as: 'follower',
                     attributes: ["id", "username", "email"]
                 }]
             });
