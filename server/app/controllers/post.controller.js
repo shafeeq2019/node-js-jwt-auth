@@ -6,6 +6,7 @@ const Op = core.db.Sequelize.Op;
 /*
 TO DO : 
 - except the private posts from the get requests
+- show post with scopeId 2 only to the followers 
  */
 exports.get = async (req, res, next) => {
   try {
@@ -160,7 +161,8 @@ exports.getUserPost = async (req, res, next) => {
     let posts = await db.post.findAll({
       where: {
         isDeleted: false,
-        userId: req.params.id
+        userId: req.params.id,
+        scopeId: 1
       },
       order: [
         ['createdAt', 'DESC']
