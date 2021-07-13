@@ -2,7 +2,7 @@
   <b-container>
     <b-row class="mt-4 mb-3" align-h="between">
       <b-col cols="2">
-        <p><b>Followers:</b></p>
+        <p><b>Followers:</b></p> 
         <b-list-group>
           <b-list-group-item v-for="follower in followers" @click="$router.push({ name: 'profile', params: { id: follower.follower.id }})" button>{{
             follower.follower.username

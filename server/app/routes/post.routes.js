@@ -85,7 +85,7 @@ Router.get(
 Router.get(
   "/:id",
   [authJwt.verifyToken],
-  controller.get
+  controller.getByPostId
 );
 
 
