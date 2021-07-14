@@ -2,6 +2,7 @@
   <b-container>
     <b-row class="mt-4 mb-3" align-h="between">
       <b-col cols="2">
+        <h2>{{username}}<b-badge>New</b-badge></h2>
         <p><b>Followers:</b></p> 
         <b-list-group>
           <b-list-group-item v-for="follower in followers" @click="$router.push({ name: 'profile', params: { id: follower.follower.id }})" button>{{
@@ -91,6 +92,7 @@ export default {
   data() {
     return {
       user: auth.user,
+      username:'',
       posts: "",
       post: "",
       show: true,
@@ -118,7 +120,8 @@ export default {
     },
     async getPosts() {
       let data = await api.sendRequest("get", `post/getUserpost/${this.id}`);
-      this.posts = data;
+      this.posts = data.data;
+      this.username = data.user.username
     },
   },
   created() {

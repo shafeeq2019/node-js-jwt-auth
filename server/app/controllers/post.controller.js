@@ -86,11 +86,21 @@ exports.getAll = async (req, res, next) => {
 }
 
 exports.getUserPost = async (req, res, next) => {
+  //check if user exist
+  let user = await db.user.findOne({
+    where: {
+      id: req.params.id
+    }
+  })
+  if (!user) {
+    return res.status(404).send(core.controller.api.createErrorMessage(`user with id ${req.params.id} not found !`, user));
+  }
   let query = prepareQuery(req, res);
   query.where["userId"] = req.params.id;
   try {
     let posts = await db.post.findAll(query)
-    res.status(200).send(posts);
+    let data = core.controller.api.sendDataWithUser(user, posts);
+    res.status(200).send(data);
   } catch (error) {
     console.log(error)
     res.status(404).send(error);

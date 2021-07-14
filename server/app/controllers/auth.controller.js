@@ -45,9 +45,7 @@ exports.signup = (req, res) => {
       }
     })
     .catch(err => {
-      res.status(500).send({
-        message: err.message
-      });
+      res.status(500).send(core.controller.api.createErrorMessage(err));
     });
 };
 
@@ -59,9 +57,7 @@ exports.signin = (req, res) => {
     })
     .then(user => {
       if (!user) {
-        return res.status(404).send({
-          message: "User Not found."
-        });
+        return res.status(404).send(core.controller.api.createErrorMessage("User Not found."));
       }
 
       var passwordIsValid = bcrypt.compareSync(
@@ -70,10 +66,7 @@ exports.signin = (req, res) => {
       );
 
       if (!passwordIsValid) {
-        return res.status(401).send({
-          accessToken: null,
-          message: "Invalid Password!"
-        });
+        return res.status(401).send(core.controller.api.createErrorMessage("Invalid Password!", { accessToken: null}));
       }
 
       var token = jwt.sign({

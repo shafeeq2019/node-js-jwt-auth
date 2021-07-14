@@ -2,12 +2,13 @@ const jwt = require("jsonwebtoken");
 const config = require('../config/config.js');
 const db = require("../models");
 const User = db.user;
+const core = require('../../core.js')
 
 verifyToken = (req, res, next) => {
   // Get auth header value
   const bearerHeader = req.headers['authorization'];
   // Check if bearer is undefined
-  if(typeof bearerHeader !== 'undefined') {
+  if (typeof bearerHeader !== 'undefined') {
     // Split at the space
     const bearer = bearerHeader.split(' ');
     // Get token from array
@@ -16,17 +17,13 @@ verifyToken = (req, res, next) => {
     req.token = bearerToken;
   } else {
     // Forbidden
-    return res.status(403).send({
-      message: "No token provided!"
-    });
+    return res.status(403).send(core.controller.api.createErrorMessage("No token provided!"));
   }
 
 
   jwt.verify(req.token, global.gConfig.auth.secret, (err, decoded) => {
     if (err) {
-      return res.status(401).send({
-        message: "Unauthorized!"
-      });
+      return res.status(401).send(core.controller.api.createErrorMessage("Unauthorized!"));
     }
     req.userId = decoded.id;
     next();
@@ -42,11 +39,7 @@ isAdmin = (req, res, next) => {
           return;
         }
       }
-
-      res.status(403).send({
-        message: "Require Admin Role!"
-      });
-      return;
+      return res.status(403).send(core.controller.api.createErrorMessage("Require Admin Role!"));
     });
   });
 };
@@ -60,10 +53,7 @@ isModerator = (req, res, next) => {
           return;
         }
       }
-
-      res.status(403).send({
-        message: "Require Moderator Role!"
-      });
+      res.status(403).send(core.controller.api.createErrorMessage("Require Moderator Role!"));
     });
   });
 };
@@ -82,10 +72,7 @@ isModeratorOrAdmin = (req, res, next) => {
           return;
         }
       }
-
-      res.status(403).send({
-        message: "Require Moderator or Admin Role!"
-      });
+      res.status(403).send(core.controller.api.createErrorMessage("Require Moderator or Admin Role!"));
     });
   });
 };

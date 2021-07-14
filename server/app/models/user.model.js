@@ -6,11 +6,16 @@ module.exports = (sequelize, Sequelize) => {
     email: {
       type: Sequelize.STRING,
       validate: {
-        isEmail: true
+        isEmail: {
+          msg: "please enter a valid email address"
+        }
       }
     },
     password: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
+      validate: {
+        len: [6,10]
+      }
     }
   });
 
