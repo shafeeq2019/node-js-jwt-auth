@@ -13,7 +13,7 @@ module.exports = {
                 messages[error.path] = error.message;
             });
             return {
-                errors: messages,
+                error: messages,
                 data: obj
             }
         }

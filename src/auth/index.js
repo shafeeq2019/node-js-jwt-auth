@@ -21,8 +21,7 @@ export default {
         router.push(redirect)        
       }
     }).catch((err) => {
-      console.log(err);
-      context.error = err.message
+      context.error = err.error.message
     })
   },
 
@@ -33,7 +32,7 @@ export default {
       }
     }).catch((err) => {
       console.log(err)
-      context.error = err.message
+      context.error = err
     })
   },
 
