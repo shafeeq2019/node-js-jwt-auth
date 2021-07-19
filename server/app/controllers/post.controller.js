@@ -8,13 +8,68 @@ TO DO :
 - except the private posts from the get requests
 - show post with scopeId 2 only to the followers 
  */
+
+let attributes = {
+  order: [
+    ['createdAt', 'DESC']
+  ],
+  attributes: {
+    exclude: ["isDeleted", "password", "userId"]
+  },
+  include: [{
+    model: core.db.user,
+    attributes: ["id", "username", "email"]
+  }, {
+    model: core.db.like,
+    attributes: ["userId"],
+    include: [{
+      model: core.db.user,
+      attributes: ["username", "email"]
+    }]
+  }]
+}
+
+
+
 exports.getByPostId = async (req, res, next) => {
   try {
-    let query = prepareQuery(req, res);
-    query.where["id"] = req.params.id;
-    let posts = await db.post.findOne(query)
+    let posts = await db.post.findOne({
+      where: {
+        id: req.params.id,
+        isDeleted: false,
+        ////followers Posts or public posts
+        [Op.or]: [{
+            userId: req.userId
+          },
+          {
+            userId: {
+              [Op.in]: db.sequelize.literal(`
+                (SELECT "followedId" FROM "followers" 
+                WHERE "followers"."unfollowDate" IS NULL AND "followers"."userId" = ${req.userId})
+            `)
+            }
+          },
+          {
+            scopeId: 1
+          }
+        ],
+        scopeId: {
+          [Op.or]: [
+            1,
+            2,
+            {
+              [Op.eq]: db.sequelize.literal(`(CASE
+            WHEN ${req.userId} = "user".id then 3
+            END)`)
+            }
+          ]
+        }
+      },
+      ...attributes
+    })
     res.status(200).send(posts);
   } catch (error) {
+    console.log(error.message)
     res.status(404).send(error.message);
   }
 }
@@ -46,25 +101,7 @@ exports.getFollowersPosts = async (req, res, next) => {
           [Op.or]: [1, 2]
         }
       },
-      order: [
-        ['createdAt', 'DESC']
-      ],
-      attributes: {
-        exclude: ["isDeleted", "password", "userId"]
-      },
-      include: [{
-          model: core.db.user,
-          attributes: ["id", "username", "email"]
-        },
-        {
-          model: core.db.like,
-          attributes: ["userId"],
-          include: [{
-            model: core.db.user,
-            attributes: ["username", "email"]
-          }]
-        }
-      ]
+      ...attributes
     })
     res.status(200).send(posts);
   } catch (error) {
@@ -76,8 +113,39 @@ exports.getFollowersPosts = async (req, res, next) => {
 
 exports.getAll = async (req, res, next) => {
   try {
-    let query = prepareQuery(req, res);
-    let posts = await db.post.findAll(query)
+    let posts = await db.post.findAll({
+      where: {
+        isDeleted: false,
+        ////followers Posts or public posts
+        [Op.or]: [{
+            userId: req.userId
+          },
+          {
+            userId: {
+              [Op.in]: db.sequelize.literal(`
+                (SELECT "followedId" FROM "followers" 
+                WHERE "followers"."unfollowDate" IS NULL AND "followers"."userId" = ${req.userId})
+            `)
+            }
+          },
+          {
+            scopeId: 1
+          }
+        ],
+        scopeId: {
+          [Op.or]: [
+            1,
+            2,
+            {
+              [Op.eq]: db.sequelize.literal(`(CASE
+            WHEN ${req.userId} = "user".id then 3
+            END)`)
+            }
+          ]
+        }
+      },
+      ...attributes
+    })
     res.status(200).send(posts);
   } catch (error) {
     console.log(error)
@@ -95,10 +163,41 @@ exports.getByUserId = async (req, res, next) => {
   if (!user) {
     return res.status(404).send(core.controller.api.createErrorMessage(`user with id ${req.params.id} not found !`, user));
   }
-  let query = prepareQuery(req, res);
-  query.where["userId"] = req.params.id;
   try {
-    let posts = await db.post.findAll(query)
+    let posts = await db.post.findAll({
+      where: {
+        userId: req.params.id,
+        isDeleted: false,
+        ////followers Posts or public posts
+        [Op.or]: [{
+            userId: req.userId
+          },
+          {
+            userId: {
+              [Op.in]: db.sequelize.literal(`
+                (SELECT "followedId" FROM "followers" 
+                WHERE "followers"."unfollowDate" IS NULL AND "followers"."userId" = ${req.userId})
+            `)
+            }
+          },
+          {
+            scopeId: 1
+          }
+        ],
+        scopeId: {
+          [Op.or]: [
+            1,
+            2,
+            {
+            [Op.eq]: db.sequelize.literal(`(CASE
+            WHEN ${req.userId} = "user".id then 3
+            END)`)
+            }
+          ]
+        }
+      },
+      ...attributes
+    })
     let data = core.controller.api.sendDataWithUser(user, posts);
     res.status(200).send(data);
   } catch (error) {
@@ -107,63 +206,6 @@ exports.getByUserId = async (req, res, next) => {
   }
 }
 
-
-let prepareQuery = (req, res) => {
-  let tempSQL = db.sequelize.queryInterface.QueryGenerator.selectQuery('followers', {
-    attributes: ['followedId'],
-    where: {
-      unfollowDate: null,
-      userId: req.userId
-    }
-  }).slice(0, -1); // to remove the ';' from the end of the SQL
-  return {
-    where: {
-      isDeleted: false,
-      ////followers Posts or public posts
-      [Op.or]: [
-        {
-          userId: req.userId
-        },
-        {
-          userId: {
-            [Op.in]: db.sequelize.literal(`(${tempSQL})`)
-          }
-        },
-        {
-          scopeId: 1
-        }
-      ],
-      scopeId: {
-        [Op.or]: [
-          1,
-          2,
-          {
-            [Op.eq]: db.sequelize.literal(`(CASE
-            WHEN ${req.userId} =  "user".id then 3
-            END)`)
-          }
-        ]
-      }
-    },
-    order: [
-      ['createdAt', 'DESC']
-    ],
-    attributes: {
-      exclude: ["isDeleted", "password", "userId"]
-    },
-    include: [{
-      model: core.db.user,
-      attributes: ["id", "username", "email"]
-    }, {
-      model: core.db.like,
-      attributes: ["userId"],
-      include: [{
-        model: core.db.user,
-        attributes: ["username", "email"]
-      }]
-    }]
-  }
-}
 
 
 exports.add = async (req, res, next) => {

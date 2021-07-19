@@ -119,7 +119,7 @@ export default {
       this.followers = data;
     },
     async getPosts() {
-      let data = await api.sendRequest("get", `post/getUserpost/${this.id}`);
+      let data = await api.sendRequest("get", `post/getByUserId/${this.id}`);
       this.posts = data.data;
       this.username = data.user.username
     },

@@ -69,7 +69,7 @@ export default {
       this.getPosts();
     },
     async getPosts() {
-      let data = await api.sendRequest("get", "post/getUserPost");
+      let data = await api.sendRequest("get", "post/getByUserId");
       this.posts = data;
     },
   },
