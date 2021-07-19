@@ -14,6 +14,10 @@ const Op = db.Sequelize.Op;
 
 
 exports.signup = (req, res) => {
+  if (!req.body.password || req.body.password.length < 6) {
+    console.log(req.body.password.length)
+    return res.status(500).send(core.controller.api.createErrorMessage("password must have at least 6 letters"));
+  }
   // Save User to Database
   User.create({
       username: req.body.username,

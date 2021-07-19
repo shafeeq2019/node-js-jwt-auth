@@ -90,6 +90,7 @@ exports.delete = async (req, res, next) => {
 // }
 
 exports.getFollowers = async (req, res, next) => {
+    // show user's followers only if the two users are following each other
     try {
         let check = req.userId == req.params.id ? true : await checkUsersFollow(req, res);
         if (check) {

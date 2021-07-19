@@ -12,10 +12,10 @@ exports.getByPostId = async (req, res, next) => {
   try {
     let query = prepareQuery(req, res);
     query.where["id"] = req.params.id;
-    let posts = await db.post.findAll(query)
+    let posts = await db.post.findOne(query)
     res.status(200).send(posts);
   } catch (error) {
-    res.status(404).send(error);
+    res.status(404).send(error.message);
   }
 }
 
@@ -85,7 +85,7 @@ exports.getAll = async (req, res, next) => {
   }
 }
 
-exports.getUserPost = async (req, res, next) => {
+exports.getByUserId = async (req, res, next) => {
   //check if user exist
   let user = await db.user.findOne({
     where: {
@@ -109,7 +109,6 @@ exports.getUserPost = async (req, res, next) => {
 
 
 let prepareQuery = (req, res) => {
-  let sameUser = req.userId == req.params.id;
   let tempSQL = db.sequelize.queryInterface.QueryGenerator.selectQuery('followers', {
     attributes: ['followedId'],
     where: {
@@ -120,9 +119,8 @@ let prepareQuery = (req, res) => {
   return {
     where: {
       isDeleted: false,
-      [Op.or]: [{
-          scopeId: 1
-        },
+      ////followers Posts or public posts
+      [Op.or]: [
         {
           userId: req.userId
         },
@@ -130,13 +128,21 @@ let prepareQuery = (req, res) => {
           userId: {
             [Op.in]: db.sequelize.literal(`(${tempSQL})`)
           }
+        },
+        {
+          scopeId: 1
         }
       ],
       scopeId: {
-        [Op.ne]: db.sequelize.literal(`(CASE
-          WHEN ${sameUser} then 0
-          ELSE 3 
-          END)`)
+        [Op.or]: [
+          1,
+          2,
+          {
+            [Op.eq]: db.sequelize.literal(`(CASE
+            WHEN ${req.userId} =  "user".id then 3
+            END)`)
+          }
+        ]
       }
     },
     order: [

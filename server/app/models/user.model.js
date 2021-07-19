@@ -12,13 +12,13 @@ module.exports = (sequelize, Sequelize) => {
       }
     },
     password: {
-      type: Sequelize.STRING,
-      validate: {
-        len: {
-          msg: "password must have at least 6 letters",
-          args:[6,10]
-        }
-      }
+      type: Sequelize.STRING
+      // validate: {
+      //   len: {
+      //     msg: "password must have at least 6 letters",
+      //     args:[6,10]
+      //   }
+      // }
     }
   });
 

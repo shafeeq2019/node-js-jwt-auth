@@ -5,10 +5,10 @@
         <h2>Sign Up</h2>
         <!-- to do : error handling -->
         <p>Sign up for a free account to get using of this website.</p>
-        <div class="alert alert-danger"  style="padding: 10px" v-if="error.error && !Array.isArray(error.error)">
-          <span>{{ error.error.message }}</span>
+        <div class="alert alert-danger"  style="padding: 10px" v-if="error.error" v-for="e in error.error">
+          <span>{{ e }}</span>
         </div>
-        <div></div>
+
         <b-row>
           <b-col cols="12">
             <div class="form-group">
