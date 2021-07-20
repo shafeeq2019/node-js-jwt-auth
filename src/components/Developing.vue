@@ -1,20 +1,14 @@
 <template>
   <div>
  
-   <b-modal
-      id="modal-sm"
-      size="sm"
-      scrollable
-      title="Post liked by"
-      :hide-footer="true"
-      :hide-header-close="true"
-    >
-      <b-list-group flush>
-        <b-list-group-item href="#" v-for="like in postLikes">{{
-          like.user.username
-        }}</b-list-group-item>
-      </b-list-group>
-    </b-modal>
+      <b-col md="3" class="py-3">
+        <b-button v-b-popover.hover.html="popoverMethod" title="Popover with HTML" variant="success">
+          Method
+        </b-button>
+              <b-col md="3" class="py-3">
+        <b-button v-b-popover.hover.html="popoverMethod" title="Popover with HTML" variant="success">
+          Method
+        </b-button>
 
 
 </div>
@@ -23,5 +17,10 @@
 <script>
 export default {
   setup() {},
+  methods: {
+    popoverMethod() {
+      return `<button> test </button>`;
+    },
+  },
 };
 </script>

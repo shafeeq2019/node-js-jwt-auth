@@ -1,5 +1,5 @@
 <template>
-  <div> 
+  <div>
     <b-navbar
       toggleable="lg"
       type="dark"
@@ -20,14 +20,31 @@
         </b-navbar-nav>
 
         <!-- Right aligned nav items -->
-        <b-navbar-nav class="ml-auto" v-if="user.authenticated">
-          <b-nav-item-dropdown right>
+        <b-navbar-nav class="ml-auto" right>
+          <b-nav-form>
+            <b-form-input
+              size="sm"
+              class="mr-sm-2"
+              placeholder="Search"
+            ></b-form-input>
+          </b-nav-form>
+          <b-nav-item-dropdown right v-if="user.authenticated">
             <!-- Using 'button-content' slot -->
             <template #button-content>
               <em>User</em>
             </template>
-            <b-dropdown-item @click="$router.push({ name: 'profile', params: { id: user.userId }})">Profile</b-dropdown-item>
-            <b-dropdown-item @click="$router.push({ name: 'posts', params: { id: user.userId }})">My posts</b-dropdown-item>
+            <b-dropdown-item
+              @click="
+                $router.push({ name: 'profile', params: { id: user.userId } })
+              "
+              >Profile</b-dropdown-item
+            >
+            <b-dropdown-item
+              @click="
+                $router.push({ name: 'posts', params: { id: user.userId } })
+              "
+              >My posts</b-dropdown-item
+            >
             <b-dropdown-item to="/login" @click="logout()"
               >Sign Out</b-dropdown-item
             >
@@ -42,7 +59,7 @@ import auth from "../auth";
 export default {
   data() {
     return {
-      user: auth.user
+      user: auth.user,
     };
   },
   methods: {
@@ -50,8 +67,12 @@ export default {
       auth.logout();
     },
   },
-  created() {
-
-  }
+  created() {},
 };
 </script>
+<style >
+.form-inline {
+  display: flex;
+  align-items: center;
+}
+</style>

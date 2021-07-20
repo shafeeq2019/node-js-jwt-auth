@@ -2,14 +2,21 @@
   <div>
     <b-card :header="post.user.username + ' ' + post.user.id">
       <template #header>
-        <span :id="post.user.id">
+        <span
+          :id="post.user.id"
+          @click="
+            $router.push({ name: 'profile', params: { id: post.user.id } })
+          "
+          v-b-popover.hover.html="popoverMethod(post.user.id)"
+          style="cursor: pointer"
+        >
           {{ post.user.username }}
         </span>
       </template>
       <b-card-text>
         {{ post.text }}
       </b-card-text>
-      <popover :postUserId="post.user.id"></popover>
+      <!-- popover -->
 
       <template #footer>
         <small class="text-muted"
@@ -82,7 +89,7 @@ export default {
     return {
       user: auth.user,
       posts: "",
-      postLikes: ""
+      postLikes: "",
     };
   },
   methods: {
@@ -128,7 +135,16 @@ export default {
       let data = await api.sendRequest("delete", `post/${postId}`);
       this.$parent.getPosts();
     },
+    popoverMethod(userId) {
+      return `<button class="unfollow-button"> unfollow  <b-icon icon="x"></b-icon>  </button>`;
+    },
   },
   mounted() {},
 };
 </script>
+<style >
+.unfollow-button {
+  background-color: white;
+}
+
+</style>
