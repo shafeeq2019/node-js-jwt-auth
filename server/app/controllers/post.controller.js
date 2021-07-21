@@ -31,52 +31,35 @@ let attributes = {
 
 
 
-exports.getByPostId = async (req, res, next) => {
-  try {
-    let posts = await db.post.findOne({
-      where: {
-        id: req.params.id,
-        isDeleted: false,
-        ////followers Posts or public posts
-        [Op.or]: [{
-            userId: req.userId
-          },
-          {
-            userId: {
-              [Op.in]: db.sequelize.literal(`
-                (SELECT "followedId" FROM "followers" 
-                WHERE "followers"."unfollowDate" IS NULL AND "followers"."userId" = ${req.userId})
-            `)
-            }
-          },
-          {
-            scopeId: 1
-          }
-        ],
-        scopeId: {
-          [Op.or]: [
-            1,
-            2,
-            {
-              [Op.eq]: db.sequelize.literal(`(CASE
-            WHEN ${req.userId} = "user".id then 3
-            END)`)
-            }
-          ]
-        }
-      },
-      ...attributes
-    })
-    res.status(200).send(posts);
-  } catch (error) {
-    console.log(error.message)
-    res.status(404).send(error.message);
-  }
-}
-
-
 exports.getFollowersPosts = async (req, res, next) => {
+  console.log(req.body)
   try {
+    const {
+      page,
+      size,
+      text,
+      id,
+      userId
+    } = req.query;
+    const {
+      limit,
+      offset
+    } = core.controller.api.getPagination(page, size);
+
+    var condition = core.controller.api.getFilterCondition([{
+        field: 'text',
+        type: 'string'
+      },
+      {
+        field: 'id',
+        type: 'integer'
+      },
+      {
+        field: 'userId',
+        type: 'integer'
+      }
+    ], req.query);
+
     let tempSQL = db.sequelize.queryInterface.QueryGenerator.selectQuery('followers', {
       attributes: ['followedId'],
       where: {
@@ -85,25 +68,31 @@ exports.getFollowersPosts = async (req, res, next) => {
       }
     }).slice(0, -1); // to remove the ';' from the end of the SQL
 
-    let posts = await db.post.findAll({
+    let posts = await db.post.findAndCountAll({
+      limit,
+      offset,
       where: {
+        ...condition,
         [Op.or]: [{
-            userId: req.userId
+            userId: req.userId,
+            scopeId: {
+              [Op.in]: [1, 2, 3]
+            }
           },
           {
             userId: {
               [Op.in]: db.sequelize.literal(`(${tempSQL})`)
+            },
+            scopeId: {
+              [Op.in]: [2]
             }
           }
         ],
-        isDeleted: false,
-        scopeId: {
-          [Op.or]: [1, 2]
-        }
+        isDeleted: false
       },
       ...attributes
     })
-    res.status(200).send(posts);
+    res.status(200).send(core.controller.api.getPagingData(posts, page, limit));
   } catch (error) {
     console.log(error.message)
     res.status(404).send(error.message);
@@ -111,101 +100,80 @@ exports.getFollowersPosts = async (req, res, next) => {
 }
 
 
-exports.getAll = async (req, res, next) => {
+
+
+exports.getPost = async (req, res, next) => {
   try {
-    let posts = await db.post.findAll({
+    const {
+      page,
+      size,
+      text,
+      id,
+      userId
+    } = req.query;
+    const {
+      limit,
+      offset
+    } = core.controller.api.getPagination(page, size);
+
+    var condition = core.controller.api.getFilterCondition([{
+        field: 'text',
+        type: 'string'
+      },
+      {
+        field: 'id',
+        type: 'integer'
+      },
+      {
+        field: 'userId',
+        type: 'integer'
+      }
+    ], req.query);
+
+    let tempSQL = db.sequelize.queryInterface.QueryGenerator.selectQuery('followers', {
+      attributes: ['followedId'],
       where: {
-        isDeleted: false,
-        ////followers Posts or public posts
-        [Op.or]: [{
-            userId: req.userId
-          },
+        unfollowDate: null,
+        userId: req.userId
+      }
+    }).slice(0, -1); // to remove the ';' from the end of the SQL
+
+    let posts = await db.post.findAndCountAll({
+      limit,
+      offset,
+      where: {
+        ...condition,
+        [Op.or]: [
+          //user posts
           {
-            userId: {
-              [Op.in]: db.sequelize.literal(`
-                (SELECT "followedId" FROM "followers" 
-                WHERE "followers"."unfollowDate" IS NULL AND "followers"."userId" = ${req.userId})
-            `)
+            userId: req.userId,
+            scopeId: {
+              [Op.in]: [1, 2, 3]
             }
           },
+          //followers posts
           {
+            userId: {
+              [Op.in]: db.sequelize.literal(`(${tempSQL})`)
+            },
+            scopeId: {
+              [Op.in]: [1, 2]
+            }
+          },// a public post from not followed user
+           {
             scopeId: 1
           }
         ],
-        scopeId: {
-          [Op.or]: [
-            1,
-            2,
-            {
-              [Op.eq]: db.sequelize.literal(`(CASE
-            WHEN ${req.userId} = "user".id then 3
-            END)`)
-            }
-          ]
-        }
+        isDeleted: false
       },
       ...attributes
     })
-    res.status(200).send(posts);
+    res.status(200).send(core.controller.api.getPagingData(posts, page, limit));
   } catch (error) {
-    console.log(error)
-    res.status(404).send(error);
+    console.log(error.message)
+    res.status(404).send(error.message);
   }
 }
-
-exports.getByUserId = async (req, res, next) => {
-  //check if user exist
-  let user = await db.user.findOne({
-    where: {
-      id: req.params.id
-    }
-  })
-  if (!user) {
-    return res.status(404).send(core.controller.api.createErrorMessage(`user with id ${req.params.id} not found !`, user));
-  }
-  try {
-    let posts = await db.post.findAll({
-      where: {
-        userId: req.params.id,
-        isDeleted: false,
-        ////followers Posts or public posts
-        [Op.or]: [{
-            userId: req.userId
-          },
-          {
-            userId: {
-              [Op.in]: db.sequelize.literal(`
-                (SELECT "followedId" FROM "followers" 
-                WHERE "followers"."unfollowDate" IS NULL AND "followers"."userId" = ${req.userId})
-            `)
-            }
-          },
-          {
-            scopeId: 1
-          }
-        ],
-        scopeId: {
-          [Op.or]: [
-            1,
-            2,
-            {
-            [Op.eq]: db.sequelize.literal(`(CASE
-            WHEN ${req.userId} = "user".id then 3
-            END)`)
-            }
-          ]
-        }
-      },
-      ...attributes
-    })
-    let data = core.controller.api.sendDataWithUser(user, posts);
-    res.status(200).send(data);
-  } catch (error) {
-    console.log(error)
-    res.status(404).send(error);
-  }
-}
-
 
 
 exports.add = async (req, res, next) => {

@@ -83,8 +83,10 @@ export default {
       this.getPosts();
     },
     async getPosts() {
-      let data = await api.sendRequest("get", "post/getFollowersPosts");
-      this.posts = data;
+      let data = await api.sendRequest("get", "post/follower", {
+        size: 100
+      });
+      this.posts = data.items;
     },
     async addLike(postId) {
       let data = await api.sendRequest("post", "like/add", {

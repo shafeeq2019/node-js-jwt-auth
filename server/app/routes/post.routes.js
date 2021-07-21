@@ -63,31 +63,17 @@ Router.delete(
 
 
 Router.get(
-  "/getFollowersPosts",
+  "/follower",
   [authJwt.verifyToken],
   controller.getFollowersPosts
-);
-
-Router.get(
-  "/getByUserId/:id",
-  [authJwt.verifyToken],
-  controller.getByUserId
 );
 
 
 Router.get(
   "/",
   [authJwt.verifyToken],
-  controller.getAll
+  controller.getPost
 );
-
-
-Router.get(
-  "/:id",
-  [authJwt.verifyToken],
-  controller.getByPostId
-);
-
 
 
 exports.router = Router;
