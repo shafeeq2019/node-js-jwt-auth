@@ -120,7 +120,8 @@ export default {
     },
     async getPosts() {
       let data = await api.sendRequest("get", `post/`, {
-        userId: this.id
+        userId: this.id,
+        size:1000
       });
       this.posts = data.items;
     },

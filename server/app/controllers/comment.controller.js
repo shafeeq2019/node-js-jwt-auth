@@ -1,6 +1,7 @@
 let core = require('../../core.js')
 let db = core.db;
-
+const api = core.controller.api;
+const Op = core.db.Sequelize.Op;
 
 exports.add = async (req, res, next) => {
   try {
@@ -46,10 +47,10 @@ exports.getByPostId = async (req, res, next) => {
       attributes: {
         exclude: ["isDeleted"]
       },
-      include:[
-        {model: db.user
-        ,attributes: ["id","username", "email"]}
-      ]
+      include: [{
+        model: db.user,
+        attributes: ["id", "username", "email"]
+      }]
     })
     res.status(200).send(comments)
   } catch (e) {
@@ -57,35 +58,103 @@ exports.getByPostId = async (req, res, next) => {
   }
 }
 
-exports.get = async (req, res, next) => {
+let attributes = {
+
+}
+
+
+
+exports.getComment = async (req, res, next) => {
+  let idFilter = {};
+  let postIdFilter = {};
+  if (req.params.commentId) {
+    idFilter = {
+      id: req.params.commentId
+    }
+  }
+  if (req.params.postId) {
+    postIdFilter = {
+      id: req.params.postId
+    }
+  }
   try {
-    let comments = await db.comment.findAll({
+    const {
+      page,
+      size,
+      text,
+      userId
+    } = req.query;
+    const {
+      limit,
+      offset
+    } = api.getPagination(page, size);
+
+    var queryFilter = api.getFilterCondition([{
+        field: 'comment',
+        type: 'string'
+      },
+      {
+        field: 'id',
+        type: 'integer'
+      },
+      {
+        field: 'userId',
+        type: 'integer'
+      }
+    ], req.query);
+
+    let tempSQL = db.sequelize.queryInterface.QueryGenerator.selectQuery('followers', {
+      attributes: ['followedId'],
       where: {
-        id: req.params.id,
+        unfollowDate: null,
+        userId: req.userId
+      }
+    }).slice(0, -1); // to remove the ';' from the end of the SQL
+
+    let posts = await db.comment.findAndCountAll({
+      limit,
+      offset,
+      where: {
+        ...idFilter,
+        ...queryFilter,
         isDeleted: false
       },
-      order: [
-        ['createdAt', 'DESC']
-      ],
-      attributes: {
-        exclude: ["isDeleted"]
+      include: [{
+        model: core.db.post,
+        attributes: ["id"],
+        where: {
+          ...postIdFilter,
+          [Op.or]: [{
+              userId: req.userId,
+              scopeId: {
+                [Op.in]: [1, 2, 3]
+              }
+            },
+            {
+              userId: {
+                [Op.in]: db.sequelize.literal(`(${tempSQL})`)
+              },
+              scopeId: {
+                [Op.in]: [1,2]
+              }
+            }
+          ],
+          isDeleted: false
+        }
       },
-      include:[
-        {model: db.user
-        ,attributes: ["id","username", "email"]}
-      ]
+      {
+        model: core.db.user,
+        attributes: ["username", "email"]
+      }
+    ]
     })
-    res.status(200).send(comments)
-  } catch (e) {
-    res.status(404).send(e.message);
+    res.status(200).send(api.getPagingData(posts, page, limit));
+  } catch (error) {
+    console.log(error.message)
+    res.status(404).send(error.message);
   }
 }
 
 exports.delete = async (req, res, next) => {
 
 }
-
-
-
-
-

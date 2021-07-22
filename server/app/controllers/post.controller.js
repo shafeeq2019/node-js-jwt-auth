@@ -2,7 +2,8 @@ let core = require('../../core.js')
 let db = core.db;
 const sequelize = require("sequelize");
 const Op = core.db.Sequelize.Op;
-
+core.controller
+const api = core.controller.api;
 /*
 TO DO : 
 - except the private posts from the get requests
@@ -32,7 +33,6 @@ let attributes = {
 
 
 exports.getFollowersPosts = async (req, res, next) => {
-  console.log(req.body)
   try {
     const {
       page,
@@ -44,9 +44,9 @@ exports.getFollowersPosts = async (req, res, next) => {
     const {
       limit,
       offset
-    } = core.controller.api.getPagination(page, size);
+    } = api.getPagination(page, size);
 
-    var condition = core.controller.api.getFilterCondition([{
+    var queryFilter = api.getFilterCondition([{
         field: 'text',
         type: 'string'
       },
@@ -72,7 +72,7 @@ exports.getFollowersPosts = async (req, res, next) => {
       limit,
       offset,
       where: {
-        ...condition,
+        ...queryFilter,
         [Op.or]: [{
             userId: req.userId,
             scopeId: {
@@ -92,7 +92,7 @@ exports.getFollowersPosts = async (req, res, next) => {
       },
       ...attributes
     })
-    res.status(200).send(core.controller.api.getPagingData(posts, page, limit));
+    res.status(200).send(api.getPagingData(posts, page, limit));
   } catch (error) {
     console.log(error.message)
     res.status(404).send(error.message);
@@ -100,23 +100,32 @@ exports.getFollowersPosts = async (req, res, next) => {
 }
 
 
+exports.test = async(req,res, next) => {
+  console.log(req.params);
+  console.log(req.query)
+}
 
 
 exports.getPost = async (req, res, next) => {
+  let idFilter = {};
+  if (req.params.postId) {
+    idFilter = {
+      id: req.params.postId
+    }
+  }
   try {
     const {
       page,
       size,
       text,
-      id,
       userId
     } = req.query;
     const {
       limit,
       offset
-    } = core.controller.api.getPagination(page, size);
+    } = api.getPagination(page, size);
 
-    var condition = core.controller.api.getFilterCondition([{
+    var queryFilter = api.getFilterCondition([{
         field: 'text',
         type: 'string'
       },
@@ -142,7 +151,8 @@ exports.getPost = async (req, res, next) => {
       limit,
       offset,
       where: {
-        ...condition,
+        ...idFilter,
+        ...queryFilter,
         [Op.or]: [
           //user posts
           {
@@ -168,7 +178,7 @@ exports.getPost = async (req, res, next) => {
       },
       ...attributes
     })
-    res.status(200).send(core.controller.api.getPagingData(posts, page, limit));
+    res.status(200).send(api.getPagingData(posts, page, limit));
   } catch (error) {
     console.log(error.message)
     res.status(404).send(error.message);

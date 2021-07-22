@@ -2,8 +2,10 @@ const {
   authJwt
 } = require("../middleware");
 const controller = require("../controllers/post.controller");
+const commentController = require("../controllers/comment.controller");
 var express = require('express');
 var Router = express.Router();
+let core = require('../../core.js')
 
 
 /**
@@ -54,6 +56,25 @@ Router.post(
   [authJwt.verifyToken],
   controller.add
 );
+
+Router.get(
+  "/:postId",
+  [authJwt.verifyToken],
+  controller.getPost
+);
+
+Router.get(
+  "/:postId/comment",
+  [authJwt.verifyToken],
+  commentController.getComment
+);
+
+Router.get(
+  "/:postId/comment/:commentId",
+  [authJwt.verifyToken],
+  commentController.getComment
+);
+
 
 Router.delete(
   "/:id",

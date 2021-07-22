@@ -35,8 +35,9 @@ Router.use(function (req, res, next) {
  * 
  */
 Router.post("/", [authJwt.verifyToken], controller.add);
-Router.get("/:id", [authJwt.verifyToken], controller.get);
-Router.get("/getByPostId/:id", [authJwt.verifyToken], controller.getByPostId);
+Router.get("/:commentId", [authJwt.verifyToken], controller.getComment);
+Router.get("/", [authJwt.verifyToken], controller.getComment);
+// t
 Router.put("/:id", [authJwt.verifyToken], controller.update);
 Router.delete("/:id", [authJwt.verifyToken], controller.delete);
 
