@@ -1,20 +1,20 @@
 const {
     authJwt
   } = require("../middleware");
-  const controller = require("../controllers/follower.controller");
+  const core = require('../../core.js');
   var express = require('express');
   var Router = express.Router();
   
   Router.post(
     "/",
     [authJwt.verifyToken],
-    controller.add
+    core.controller.follower.add
   );
   
   Router.delete(
     "/:id",
     [authJwt.verifyToken],
-    controller.delete
+    core.controller.follower.delete
   );
 
   // Router.get(
@@ -26,7 +26,7 @@ const {
   Router.get(
     "/getFollowers/:id",
     [authJwt.verifyToken],
-    controller.getFollowers
+    core.controller.follower.getFollowers
   );
   
   

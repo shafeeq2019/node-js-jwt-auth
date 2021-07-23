@@ -2,8 +2,10 @@ let core = require('../../core.js')
 let db = core.db;
 const sequelize = require("sequelize");
 const Op = core.db.Sequelize.Op;
-core.controller
-const api = core.controller.api;
+const api = require('../controllers/api.controller.js')
+let controller = require('./index');
+const privacyFilter = controller.filter.privacy;
+
 /*
 TO DO : 
 - except the private posts from the get requests
@@ -51,68 +53,32 @@ exports.getFollowersPosts = async (req, res, next) => {
         type: 'string'
       },
       {
-        field: 'id',
-        type: 'integer'
-      },
-      {
         field: 'userId',
         type: 'integer'
       }
     ], req.query);
 
-    let tempSQL = db.sequelize.queryInterface.QueryGenerator.selectQuery('followers', {
-      attributes: ['followedId'],
-      where: {
-        unfollowDate: null,
-        userId: req.userId
-      }
-    }).slice(0, -1); // to remove the ';' from the end of the SQL
 
     let posts = await db.post.findAndCountAll({
       limit,
       offset,
       where: {
         ...queryFilter,
-        [Op.or]: [{
-            userId: req.userId,
-            scopeId: {
-              [Op.in]: [1, 2, 3]
-            }
-          },
-          {
-            userId: {
-              [Op.in]: db.sequelize.literal(`(${tempSQL})`)
-            },
-            scopeId: {
-              [Op.in]: [2]
-            }
-          }
-        ],
+        ...privacyFilter(req, [1, 2, 3], [2]),
         isDeleted: false
       },
       ...attributes
     })
     res.status(200).send(api.getPagingData(posts, page, limit));
   } catch (error) {
-    console.log(error.message)
+    console.log(error)
     res.status(404).send(error.message);
   }
 }
 
 
-exports.test = async(req,res, next) => {
-  console.log(req.params);
-  console.log(req.query)
-}
-
 
 exports.getPost = async (req, res, next) => {
-  let idFilter = {};
-  if (req.params.postId) {
-    idFilter = {
-      id: req.params.postId
-    }
-  }
   try {
     const {
       page,
@@ -130,50 +96,23 @@ exports.getPost = async (req, res, next) => {
         type: 'string'
       },
       {
-        field: 'id',
-        type: 'integer'
-      },
-      {
         field: 'userId',
         type: 'integer'
       }
     ], req.query);
 
-    let tempSQL = db.sequelize.queryInterface.QueryGenerator.selectQuery('followers', {
-      attributes: ['followedId'],
-      where: {
-        unfollowDate: null,
-        userId: req.userId
-      }
-    }).slice(0, -1); // to remove the ';' from the end of the SQL
-
     let posts = await db.post.findAndCountAll({
       limit,
       offset,
       where: {
-        ...idFilter,
+        ...privacyFilter(req, [1, 2, 3], [1, 2], [1]),
+        ...(req.params.postId && {
+          id: req.params.postId
+        }),
+        ...(req.params.userId && {
+          userId: req.params.userId
+        }),
         ...queryFilter,
-        [Op.or]: [
-          //user posts
-          {
-            userId: req.userId,
-            scopeId: {
-              [Op.in]: [1, 2, 3]
-            }
-          },
-          //followers posts
-          {
-            userId: {
-              [Op.in]: db.sequelize.literal(`(${tempSQL})`)
-            },
-            scopeId: {
-              [Op.in]: [1, 2]
-            }
-          },// a public post from not followed user
-           {
-            scopeId: 1
-          }
-        ],
         isDeleted: false
       },
       ...attributes

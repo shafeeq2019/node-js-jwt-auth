@@ -1,7 +1,11 @@
 let core = require('../../core.js')
 let db = core.db;
-const api = core.controller.api;
+const api = require('../controllers/api.controller.js')
 const Op = core.db.Sequelize.Op;
+let controller = require('./index');
+const privacyFilter = controller.filter.privacy;
+
+
 
 exports.add = async (req, res, next) => {
   try {
@@ -34,55 +38,12 @@ exports.update = async (req, res, next) => {
   }
 }
 
-exports.getByPostId = async (req, res, next) => {
-  try {
-    let comments = await db.comment.findAll({
-      where: {
-        postId: req.params.id,
-        isDeleted: false
-      },
-      order: [
-        ['createdAt', 'DESC']
-      ],
-      attributes: {
-        exclude: ["isDeleted"]
-      },
-      include: [{
-        model: db.user,
-        attributes: ["id", "username", "email"]
-      }]
-    })
-    res.status(200).send(comments)
-  } catch (e) {
-    res.status(404).send(e.message);
-  }
-}
-
-let attributes = {
-
-}
-
-
 
 exports.getComment = async (req, res, next) => {
-  let idFilter = {};
-  let postIdFilter = {};
-  if (req.params.commentId) {
-    idFilter = {
-      id: req.params.commentId
-    }
-  }
-  if (req.params.postId) {
-    postIdFilter = {
-      id: req.params.postId
-    }
-  }
   try {
     const {
       page,
-      size,
-      text,
-      userId
+      size
     } = req.query;
     const {
       limit,
@@ -93,52 +54,25 @@ exports.getComment = async (req, res, next) => {
         field: 'comment',
         type: 'string'
       },
-      {
-        field: 'id',
-        type: 'integer'
-      },
-      {
-        field: 'userId',
-        type: 'integer'
-      }
     ], req.query);
-
-    let tempSQL = db.sequelize.queryInterface.QueryGenerator.selectQuery('followers', {
-      attributes: ['followedId'],
-      where: {
-        unfollowDate: null,
-        userId: req.userId
-      }
-    }).slice(0, -1); // to remove the ';' from the end of the SQL
 
     let posts = await db.comment.findAndCountAll({
       limit,
       offset,
+      attributes: {
+        exclude: ["isDeleted","userId"]
+      },
       where: {
-        ...idFilter,
+        ...(req.params.commentId && {id: req.params.commentId}),
         ...queryFilter,
         isDeleted: false
       },
       include: [{
+        attributes: [],
         model: core.db.post,
-        attributes: ["id"],
         where: {
-          ...postIdFilter,
-          [Op.or]: [{
-              userId: req.userId,
-              scopeId: {
-                [Op.in]: [1, 2, 3]
-              }
-            },
-            {
-              userId: {
-                [Op.in]: db.sequelize.literal(`(${tempSQL})`)
-              },
-              scopeId: {
-                [Op.in]: [1,2]
-              }
-            }
-          ],
+          ...(req.params.postId && {id: req.params.postId}),
+          ...privacyFilter(req,[1,2,3],[1,2],[1]),
           isDeleted: false
         }
       },

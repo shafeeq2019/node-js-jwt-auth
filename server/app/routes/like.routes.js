@@ -4,7 +4,7 @@ const {
 const controller = require("../controllers/like.controller");
 var express = require('express');
 var Router = express.Router();
-
+const core = require('../../core.js');
 
 Router.use(function (req, res, next) {
   res.header(
@@ -36,7 +36,7 @@ Router.use(function (req, res, next) {
  */
 
 
-Router.post("/add", [authJwt.verifyToken], controller.add);
+Router.post("/add", [authJwt.verifyToken], core.controller.like.add);
 
 exports.router = Router;
 exports.path = 'like'

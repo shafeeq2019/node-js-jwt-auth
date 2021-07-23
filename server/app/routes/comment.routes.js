@@ -1,7 +1,7 @@
 const {
   authJwt
 } = require("../middleware");
-const controller = require("../controllers/comment.controller");
+const core = require('../../core.js');
 var express = require('express');
 var Router = express.Router();
 
@@ -34,12 +34,12 @@ Router.use(function (req, res, next) {
  *        description: test
  * 
  */
-Router.post("/", [authJwt.verifyToken], controller.add);
-Router.get("/:commentId", [authJwt.verifyToken], controller.getComment);
-Router.get("/", [authJwt.verifyToken], controller.getComment);
+Router.post("/", [authJwt.verifyToken], core.controller.comment.add);
+Router.get("/", [authJwt.verifyToken], core.controller.comment.getComment);
+Router.get("/:commentId", [authJwt.verifyToken], core.controller.comment.getComment);
 // t
-Router.put("/:id", [authJwt.verifyToken], controller.update);
-Router.delete("/:id", [authJwt.verifyToken], controller.delete);
+Router.put("/:id", [authJwt.verifyToken], core.controller.comment.update);
+Router.delete("/:id", [authJwt.verifyToken], core.controller.comment.delete);
 
 exports.router = Router;
 exports.path = 'comment'

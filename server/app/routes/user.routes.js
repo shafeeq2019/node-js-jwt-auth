@@ -1,9 +1,9 @@
 const {
   authJwt
 } = require("../middleware");
-const controller = require("../controllers/user.controller");
 var express = require('express');
 var Router = express.Router();
+const core = require('../../core.js');
 
 Router.use(function (req, res, next) {
   res.header(
@@ -27,30 +27,30 @@ Router.use(function (req, res, next) {
  *         description: ok
 
  */
-Router.get("/test/all", controller.allAccess);
+Router.get("/test/all", core.controller.user.allAccess);
 
 Router.get(
   "/user",
   [authJwt.verifyToken],
-  controller.userBoard
+  core.controller.user.userBoard
 );
 
 Router.get(
   "/mod",
   [authJwt.verifyToken, authJwt.isModerator],
-  controller.moderatorBoard
+  core.controller.user.moderatorBoard
 );
 
 Router.get(
   "/admin",
   [authJwt.verifyToken, authJwt.isAdmin],
-  controller.adminBoard
+  core.controller.user.adminBoard
 );
 
 Router.get(
   "/getUserInfo",
   [authJwt.verifyToken],
-  controller.getUserInfo
+  core.controller.user.getUserInfo
 );
 
 exports.router = Router;
