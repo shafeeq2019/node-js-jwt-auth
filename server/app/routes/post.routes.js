@@ -51,7 +51,10 @@ var Router = express.Router();
 
 Router.post(
   "/",
-  [authJwt.verifyToken],
+  [
+    authJwt.verifyToken,
+    core.validator(core.schemas.post.post, 'body'),
+  ],
   core.controller.post.add
 );
 
@@ -66,20 +69,29 @@ Router.get(
 
 Router.get(
   "/:postId/comment",
-  [authJwt.verifyToken],
+  [
+    authJwt.verifyToken,
+    core.validator(core.schemas.post.getById, 'params'),
+  ],
   core.controller.comment.getComment
 );
 
 Router.get(
   "/:postId/comment/:commentId",
-  [authJwt.verifyToken],
+  [
+    authJwt.verifyToken,
+    core.validator(core.schemas.comment.getById, 'params'),
+  ],
   core.controller.comment.getComment
 );
 
 
 Router.delete(
-  "/:id",
-  [authJwt.verifyToken],
+  "/:postId",
+  [
+    authJwt.verifyToken,
+    core.validator(core.schemas.post.getById, 'params'),
+  ],
   core.controller.post.delete
 );
 

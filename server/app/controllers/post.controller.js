@@ -145,19 +145,19 @@ exports.delete = async (req, res, next) => {
   try {
     let post = await db.post.findOne({
       where: {
-        id: req.params.id,
+        id: req.params.postId,
         userId: req.userId,
         isDeleted: false
       }
     });
     if (!post) {
-      res.status(404).send(`no post with id ${req.params.id} found !`);
+      return res.status(404).send(core.controller.api.createErrorMessage(`no post with id ${req.params.postId} found !`));
     }
     post.update({
       isDeleted: true
     })
-    res.status(200).send(`post with id ${req.params.id} is deleted !`);
+    res.status(200).send(`post with id ${req.params.postId} is deleted !`);
   } catch (error) {
-    res.status(404).send(error.message);
+    res.status(404).send(core.controller.api.createErrorMessage(error.message));
   }
 }

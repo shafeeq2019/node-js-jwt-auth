@@ -8,6 +8,7 @@ const privacyFilter = controller.filter.privacy;
 
 
 exports.add = async (req, res, next) => {
+  //TO DO: no comments on deleted posts
   try {
     let newComment = await db.comment.create({
       userId: req.userId,
@@ -27,7 +28,7 @@ exports.update = async (req, res, next) => {
       comment: req.body.comment
     }, {
       where: {
-        id: req.params.id,
+        id: req.params.commentId,
         userId: req.userId
       },
       returning: true
@@ -90,5 +91,5 @@ exports.getComment = async (req, res, next) => {
 }
 
 exports.delete = async (req, res, next) => {
-
+  //TO DO 
 }

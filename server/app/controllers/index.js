@@ -1,5 +1,6 @@
 
 exports.filter = require('./filters');
+exports.api = require('./api.controller.js');
 exports.post = require('./post.controller.js');
 exports.comment = require('./comment.controller.js');
 exports.follower = require('./follower.controller.js');
