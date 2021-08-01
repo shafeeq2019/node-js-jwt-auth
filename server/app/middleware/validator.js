@@ -2,11 +2,24 @@ const Joi = require('joi');
 const core = require('../../core.js')
 const validator = (schema, property) => {
     return (req, res, next) => {
+        let data;
+        if (typeof (property) === 'object') {
+            for (p of property) {
+                console.log(req[p])
+                data = {
+                    ...data,
+                    ...req[p]
+                }
+            }
+        } else if (typeof (property) === 'string') {
+            data = req[property]
+        }
+        console.log(data)
         const {
             error
-        } = schema.validate(req[property]);
-        const valid = error == null;
+        } = schema.validate(data);
 
+        const valid = error == null;
         if (valid) {
             next();
         } else {

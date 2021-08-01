@@ -9,16 +9,28 @@ const privacyFilter = controller.filter.privacy;
 
 exports.add = async (req, res, next) => {
   //TO DO: no comments on deleted posts
+  let postId ;
   try {
+    // let post = await db.comment.findOne({
+    //   where: {
+    //     id: req.body.postId || req.params.postId,
+    //     userId: req.userId,
+    //     isDeleted: false
+    //   }
+    // });
+    // if (!post) {
+    //   return res.status(404).send(core.controller.api.createErrorMessage(`no comment with id ${req.params.commentId} found !`));
+    // }
+
     let newComment = await db.comment.create({
       userId: req.userId,
       comment: req.body.comment,
-      postId: req.body.postId
+      postId:  req.params.postId || req.body.postId 
     });
     res.status(200).send(newComment)
   } catch (error) {
-    console.log(error.message)
-    res.status(404).send(error.message);
+    core.logger.error(error.message)
+    res.status(404).send(core.controller.api.createErrorMessage(error.message));
   }
 }
 
@@ -29,18 +41,19 @@ exports.update = async (req, res, next) => {
     }, {
       where: {
         id: req.params.commentId,
-        userId: req.userId
+        userId: req.userId,
+        isDeleted: false
       },
       returning: true
     });
-    res.status(200).send(updatedComment[1])
+    core.controller.api.sendUpdateMessage(res, updatedComment)
   } catch (e) {
-    res.status(404).send(e.message);
+    res.status(404).send(core.controller.api.createErrorMessage(e.message));
   }
 }
 
 
-exports.getComment = async (req, res, next) => {
+exports.get = async (req, res, next) => {
   try {
     const {
       page,
@@ -85,11 +98,29 @@ exports.getComment = async (req, res, next) => {
     })
     res.status(200).send(api.getPagingData(posts, page, limit));
   } catch (error) {
-    console.log(error.message)
-    res.status(404).send(error.message);
+    res.status(404).send(core.controller.api.createErrorMessage(error.message));
   }
 }
 
 exports.delete = async (req, res, next) => {
-  //TO DO 
+  try {
+    let post = await db.comment.findOne({
+      where: {
+        id: req.params.commentId,
+        userId: req.userId,
+        isDeleted: false
+      }
+    });
+    if (!post) {
+      return res.status(404).send(core.controller.api.createErrorMessage(`no comment with id ${req.params.commentId} found !`));
+    }
+    post.update({
+      isDeleted: true
+    })
+    res.status(200).send({
+      message: `comment with id ${req.params.commentId} is deleted !`
+    });
+  } catch (error) {
+    res.status(404).send(core.controller.api.createErrorMessage(error.message));
+  }
 }

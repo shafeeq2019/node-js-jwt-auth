@@ -49,6 +49,7 @@ var Router = express.Router();
 
 
 
+//posts
 Router.post(
   "/",
   [
@@ -59,30 +60,20 @@ Router.post(
 );
 
 
-
 Router.get(
   "/:postId",
-  [authJwt.verifyToken],
+  [
+    authJwt.verifyToken,
+    core.validator(core.schemas.post.getById, 'params'),
+  ],
   core.controller.post.getPost
 );
 
 
 Router.get(
-  "/:postId/comment",
-  [
-    authJwt.verifyToken,
-    core.validator(core.schemas.post.getById, 'params'),
-  ],
-  core.controller.comment.getComment
-);
-
-Router.get(
-  "/:postId/comment/:commentId",
-  [
-    authJwt.verifyToken,
-    core.validator(core.schemas.comment.getById, 'params'),
-  ],
-  core.controller.comment.getComment
+  "/",
+  [authJwt.verifyToken],
+  core.controller.post.getPost
 );
 
 
@@ -96,12 +87,64 @@ Router.delete(
 );
 
 
+//likes
+Router.get(
+  "/:postId/like",
+  [
+    authJwt.verifyToken,
+    core.validator(core.schemas.post.getById, 'params'),
+  ],
+  core.controller.like.get
+);
+
+Router.post(
+  "/:postId/like",
+  [
+    authJwt.verifyToken,
+    core.validator(core.schemas.post.getById, 'params'),
+  ],
+  core.controller.like.add
+);
+
+//comments
+Router.get(
+  "/:postId/comment",
+  [
+    authJwt.verifyToken,
+    core.validator(core.schemas.post.getById, 'params'),
+  ],
+  core.controller.comment.get
+);
+
+Router.post(
+  "/:postId/comment",
+  [
+    authJwt.verifyToken,
+    core.validator(core.schemas.comment.post, ['params', 'body']),
+  ],
+  core.controller.comment.add
+);
 
 Router.get(
-  "/",
-  [authJwt.verifyToken],
-  core.controller.post.getPost
+  "/:postId/comment/:commentId",
+  [
+    authJwt.verifyToken,
+    core.validator(core.schemas.comment.getById, 'params'),
+  ],
+  core.controller.comment.get
 );
+
+Router.delete(
+  "/:postId/comment/:commentId",
+  [
+    authJwt.verifyToken,
+    core.validator(core.schemas.comment.getById, 'params'),
+  ],
+  core.controller.comment.delete
+);
+
+
+
 
 
 exports.router = Router;

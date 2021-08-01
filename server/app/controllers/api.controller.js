@@ -1,6 +1,14 @@
 let core = require('../../core.js')
 const Op = core.db.Sequelize.Op;
 module.exports = {
+    sendUpdateMessage(res,data) {
+        data[1][0] && data[1][0].dataValues.hasOwnProperty('isDeleted') ?  delete data[1][0].dataValues.isDeleted : '';
+        let response =  {
+            success: data[0] == 1 ?  true : false,
+            data: data[1]
+        }
+        res.status(200).send(response);
+    },
     createErrorMessage(msg, obj) {
         if (typeof (msg) === "string") {
             return {

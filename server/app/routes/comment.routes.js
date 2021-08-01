@@ -34,22 +34,37 @@ Router.use(function (req, res, next) {
  *        description: test
  * 
  */
-Router.post("/", [authJwt.verifyToken],
-  core.validator(core.schemas.comment.post, 'body'),
+Router.post("/",
+  [authJwt.verifyToken,
+    core.validator(core.schemas.comment.post, 'body')
+  ],
   core.controller.comment.add);
 
-Router.get("/", [authJwt.verifyToken], core.controller.comment.getComment);
 
-Router.get("/:commentId", [authJwt.verifyToken],
-  core.validator(core.schemas.comment.getById, 'params'),
-  core.controller.comment.getComment);
+Router.get("/", [authJwt.verifyToken], core.controller.comment.get);
 
-Router.put("/:commentId", [authJwt.verifyToken],
-  core.validator(core.schemas.comment.getById, 'params'),
-  core.validator(core.schemas.comment.put, 'body'),
+Router.get("/:commentId", [
+    authJwt.verifyToken,
+    core.validator(core.schemas.comment.getById, 'params')
+  ],
+  core.controller.comment.get);
+
+Router.put("/:commentId", [
+    authJwt.verifyToken,
+    core.validator(core.schemas.comment.getById, 'params'),
+    core.validator(core.schemas.comment.put, 'body')
+  ],
   core.controller.comment.update);
 
-Router.delete("/:id", [authJwt.verifyToken], core.controller.comment.delete);
+
+Router.delete(
+  "/:commentId", [
+    authJwt.verifyToken,
+    core.validator(core.schemas.comment.getById, 'params'),
+  ],
+  core.controller.comment.delete
+);
+
 
 exports.router = Router;
 exports.path = 'comment';

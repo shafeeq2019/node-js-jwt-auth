@@ -44,6 +44,8 @@ app.use("/",function(req, res, next) {
   next();
 })
 
+app.use("/", core.validator(core.schemas.paginaiton, 'query'));
+
 //api-docs
 
 
@@ -51,7 +53,7 @@ app.use("/",function(req, res, next) {
 // database
 const db = require("./app/models");
 
-db.sshosho2020
+
 
 // force: true will drop the table if it already exists
   // db.sequelize.sync({force: true}).then(() => {

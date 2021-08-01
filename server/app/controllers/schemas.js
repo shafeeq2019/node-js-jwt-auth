@@ -1,6 +1,10 @@
 // schemas.js 
 const Joi = require('joi')
 const schemas = {
+    paginaiton: Joi.object().keys({
+        size: Joi.number().min(1),
+        page: Joi.number()
+    }).unknown(true),
     comment: {
         post: Joi.object().keys({
             comment: Joi.string().required(),
@@ -22,7 +26,12 @@ const schemas = {
         getById: Joi.object().keys({
             postId: Joi.number().min(1).required()
         })
-    }
+    },
+    // like: {
+    //     post: Joi.object().keys({
+    //         postId: Joi.number().min(1).required()
+    //     }),
+    // }
 
 };
 module.exports = schemas;

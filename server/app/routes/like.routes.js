@@ -36,7 +36,7 @@ Router.use(function (req, res, next) {
  */
 
 
-Router.post("/add", [authJwt.verifyToken], core.controller.like.add);
+Router.post("/", [authJwt.verifyToken], core.controller.like.add);
 
 exports.router = Router;
 exports.path = 'like'
