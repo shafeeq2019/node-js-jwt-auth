@@ -156,7 +156,9 @@ exports.delete = async (req, res, next) => {
     post.update({
       isDeleted: true
     })
-    res.status(200).send(`post with id ${req.params.postId} is deleted !`);
+    res.status(200).send({
+      message: `post with id ${req.params.postId} is deleted !`
+    });
   } catch (error) {
     res.status(404).send(core.controller.api.createErrorMessage(error.message));
   }

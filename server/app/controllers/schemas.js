@@ -25,7 +25,15 @@ const schemas = {
         }),
         getById: Joi.object().keys({
             postId: Joi.number().min(1).required()
-        })
+        }),
+        postComment: {
+            params: Joi.object().keys({
+                postId: Joi.number().min(1).required()
+            }),
+            body: Joi.object().keys({
+                comment: Joi.string().required()
+            })
+        }
     },
     // like: {
     //     post: Joi.object().keys({

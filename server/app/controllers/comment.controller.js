@@ -8,24 +8,23 @@ const privacyFilter = controller.filter.privacy;
 
 
 exports.add = async (req, res, next) => {
-  //TO DO: no comments on deleted posts
-  let postId ;
   try {
-    // let post = await db.comment.findOne({
-    //   where: {
-    //     id: req.body.postId || req.params.postId,
-    //     userId: req.userId,
-    //     isDeleted: false
-    //   }
-    // });
-    // if (!post) {
-    //   return res.status(404).send(core.controller.api.createErrorMessage(`no comment with id ${req.params.commentId} found !`));
-    // }
+    let post = await db.post.findOne({
+      where: {
+        id: req.body.postId || req.params.postId,
+        isDeleted: false,
+        ...privacyFilter(req, [1, 2, 3], [1, 2], [1]),
+      }
+    });
+
+    if (!post) {
+      return res.status(404).send(core.controller.api.createErrorMessage(`no post found !`));
+    }
 
     let newComment = await db.comment.create({
       userId: req.userId,
       comment: req.body.comment,
-      postId:  req.params.postId || req.body.postId 
+      postId: req.params.postId || req.body.postId
     });
     res.status(200).send(newComment)
   } catch (error) {
@@ -65,38 +64,41 @@ exports.get = async (req, res, next) => {
     } = api.getPagination(page, size);
 
     var queryFilter = api.getFilterCondition([{
-        field: 'comment',
-        type: 'string'
-      },
-    ], req.query);
+      field: 'comment',
+      type: 'string'
+    }, ], req.query);
 
-    let posts = await db.comment.findAndCountAll({
+    let comments = await db.comment.findAndCountAll({
       limit,
       offset,
       attributes: {
-        exclude: ["isDeleted","userId"]
+        exclude: ["isDeleted", "userId"]
       },
       where: {
-        ...(req.params.commentId && {id: req.params.commentId}),
+        ...(req.params.commentId && {
+          id: req.params.commentId
+        }),
         ...queryFilter,
         isDeleted: false
       },
       include: [{
-        attributes: [],
-        model: core.db.post,
-        where: {
-          ...(req.params.postId && {id: req.params.postId}),
-          ...privacyFilter(req,[1,2,3],[1,2],[1]),
-          isDeleted: false
+          attributes: [],
+          model: core.db.post,
+          where: {
+            ...(req.params.postId && {
+              id: req.params.postId
+            }),
+            ...privacyFilter(req, [1, 2, 3], [1, 2], [1]),
+            isDeleted: false
+          }
+        },
+        {
+          model: core.db.user,
+          attributes: ["username", "email"]
         }
-      },
-      {
-        model: core.db.user,
-        attributes: ["username", "email"]
-      }
-    ]
+      ]
     })
-    res.status(200).send(api.getPagingData(posts, page, limit));
+    res.status(200).send(api.getPagingData(comments, page, limit));
   } catch (error) {
     res.status(404).send(core.controller.api.createErrorMessage(error.message));
   }
