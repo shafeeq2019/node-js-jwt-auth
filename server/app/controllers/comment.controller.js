@@ -41,6 +41,7 @@ exports.update = async (req, res, next) => {
       where: {
         id: req.params.commentId,
         userId: req.userId,
+        ...(req.params.postId && {postId: req.params.postId}),
         isDeleted: false
       },
       returning: true
