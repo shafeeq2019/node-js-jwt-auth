@@ -97,6 +97,9 @@ Router.get(
   core.controller.like.get
 );
 
+Router.get("/:postId/like/:likeId", [authJwt.verifyToken, core.validator(schemas.like.getById, 'params')], core.controller.like.get);
+
+
 Router.post(
   "/:postId/like",
   [
@@ -105,6 +108,17 @@ Router.post(
   ],
   core.controller.like.add
 );
+
+
+Router.delete(
+  "/:postId/like/:likeId",
+  [
+    authJwt.verifyToken,
+    core.validator(schemas.like.getById, 'params'),
+  ],
+  core.controller.like.delete
+);
+
 
 //comments
 Router.get(

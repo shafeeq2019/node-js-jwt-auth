@@ -53,5 +53,21 @@ Router.get(
   core.controller.user.getUserInfo
 );
 
+Router.get(
+  "/:userId/post",
+  [authJwt.verifyToken],
+  core.controller.post.getPost
+);
+
+Router.get(
+  "/:userId/post/:postId",
+  [authJwt.verifyToken],
+  core.controller.post.getPost
+);
+
+
+
+
+
 exports.router = Router;
 exports.path = 'user'

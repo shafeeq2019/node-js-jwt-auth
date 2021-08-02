@@ -51,10 +51,6 @@ exports.getFollowersPosts = async (req, res, next) => {
     var queryFilter = api.getFilterCondition([{
         field: 'text',
         type: 'string'
-      },
-      {
-        field: 'userId',
-        type: 'integer'
       }
     ], req.query);
 
@@ -71,8 +67,7 @@ exports.getFollowersPosts = async (req, res, next) => {
     })
     res.status(200).send(api.getPagingData(posts, page, limit));
   } catch (error) {
-    console.log(error)
-    res.status(404).send(error.message);
+    res.status(404).send(core.controller.api.createErrorMessage(error.message));
   }
 }
 
@@ -119,8 +114,7 @@ exports.getPost = async (req, res, next) => {
     })
     res.status(200).send(api.getPagingData(posts, page, limit));
   } catch (error) {
-    console.log(error.message)
-    res.status(404).send(error.message);
+    res.status(404).send(core.controller.api.createErrorMessage(error.message));
   }
 }
 
@@ -136,7 +130,7 @@ exports.add = async (req, res, next) => {
     });
     res.status(200).send(post);
   } catch (error) {
-    res.status(404).send(error);
+    res.status(404).send(core.controller.api.createErrorMessage(error.message));
   }
 }
 

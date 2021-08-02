@@ -35,11 +35,15 @@ const schemas = {
             })
         }
     },
-    // like: {
-    //     post: Joi.object().keys({
-    //         postId: Joi.number().min(1).required()
-    //     }),
-    // }
+    like: {
+        post: Joi.object().keys({
+            postId: Joi.number().min(1).required()
+        }),
+        getById: Joi.object().keys({
+            postId: Joi.number().min(1),
+            likeId: Joi.number().min(1).required()
+        })
+    }
 
 };
 module.exports = schemas;

@@ -6,6 +6,11 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.INTEGER,
       primaryKey: true
     }
+  }, {
+    indexes: [{
+      unique: true,
+      fields: ['userId', 'postId']
+    }]
   })
 
   return Like;
